@@ -16,9 +16,16 @@ body {
     max-width: 500px;
 }
 
-#gameMenu {
+#gameMenu,
+#pokemonSelection,
+#resumeMenu {
     font-size: 1.5rem;
     text-align: center;
+}
+
+#pokemonSelection,
+#resumeMenu {
+    display: none;
 }
 
 #greeterPokemon {
@@ -27,7 +34,8 @@ body {
 }
 
 #newGameButton,
-#resumeGameButton {
+#resumeGameButton,
+#selectStarterButton {
     display: block;
     height: 50px;
     margin: auto;
@@ -38,13 +46,24 @@ body {
     padding: 20px;
 }
 
-#selectorMessage {
+#selectorMessage,
+#starterSelectorMessage {
     font-weight: bold;
 }
 
-#heroSelector {
+#username-input,
+#pokemonSelector {
     width: 35vw;
     max-width: 400px;
+}
+
+.errorMessage {
+    color: red;
+    font-weight: bold;
+}
+
+#user-dne-error {
+    font-size: 1rem;
 }
 
 /* Import Pokemon Font */

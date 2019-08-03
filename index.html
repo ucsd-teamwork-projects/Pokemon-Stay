@@ -24,7 +24,8 @@
                     <div class="col-xs-12">
                         <label id="selectorMessage" for="username-input">Enter your username!</label>
                         <br>
-                        <input type="text" placeholder=" pokeFan123" id="username-input">
+                        <div id="user-dne-error" class="errorMessage"></div>
+                        <input type="text" placeholder="pokeFan123" id="username-input">
                     </div>
                 </div>
                 <div class="mt-2 row justify-content-center">
@@ -40,14 +41,51 @@
                     </div>
                 </div>
             </div>
+            <div id="pokemonSelection" class="container">
+                <div class="mt-2 row  justify-content-center">
+                    <div class="col-xs-12 justify-content-center">
+                        <label id="starterSelectorMessage" for="pokemonSelector">Choose your Starter!</label>
+                        <br>
+                        <div id="pokemon-dne-error" class="errorMessage"></div>
+                        <input placeholder="Pikachu" id="pokemonSelector">
+                        <br>
+                    </div>
+                </div>
+                <div class="mt-2 row">
+
+                    <div class="m-2 col-12 justify-content-center">
+                        <button id="selectStarterButton" type="button" class="btn btn-success">
+                            Select
+                        </button>
+                    </div>
+                    <div class="m-2 col-12 justify-content-center">
+                        <div id="pokemonPreview">
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+            <div id="resumeMenu" class="container">
+                <div class="mt-2 row">
+                    <div class="col-12 justify-content-center">
+                        <h2 id="userGreeting"></h2>
+                        <div id="starterSelectorMessage text-center">This is your current party!</div>
+                        <br>
+                        <div id="pokemonPartyPreview"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
 
-    <script src="assets/scripts/login.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
-    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <!-- jQuery UI CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
     </script>
@@ -55,8 +93,14 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
     <!-- Firebase References -->
-    <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-database.js"></script>
+    <!-- Require Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
+    <script src="assets/scripts/firebaseConfig.js"></script>
+    <script src="assets/scripts/login.js"></script>
+
+
 </body>
 
 </html>
