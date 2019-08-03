@@ -11,6 +11,12 @@ $(document).ready(function () {
             $("#pokemonSelection").hide();
         }, 3000)
     }
+
+    function shrinkLogo() {
+        $("#gameLogo").animate({
+            "width": "30%"
+        });
+    }
     // FUNCTION TO AUTOCOMPLETE STARTER POKEMON CHOOSER
     $(function () {
         //RETRIEVE JSON DATA FROM API
@@ -43,6 +49,7 @@ $(document).ready(function () {
         if (users.child(username).exists()) {
             $("#gameMenu").hide();
             $("#resumeMenu").show();
+            shrinkLogo();
             //Save user name locally
             currentUser = username;
             currentUserRef = usersRef.child(currentUser);
@@ -51,7 +58,7 @@ $(document).ready(function () {
             //Display user current Pokemon party
             currentUserRef.on("value", function (snapshot) {
                 $.each(snapshot.val().pokemonTeam, function (id, pokemon) {
-                    $(`<img src="${pokemon.front_sprite}">`).appendTo($("#pokemonPartyPreview"));
+                    $(`<img title="${id}" src="${pokemon.spriteFront}">`).appendTo($("#pokemonPartyPreview"));
                 })
 
             })
@@ -76,34 +83,44 @@ $(document).ready(function () {
 
         // Hide Menu and Show Pokemon Selection page
         $("#gameMenu").hide();
+        shrinkLogo();
         $("#pokemonSelection").show();
 
     })
 
     $("#selectStarterButton").click(function () {
-        var starter = $("#pokemonSelector").val();
+
+        var starterName = $("#pokemonSelector").val();
 
         //verify pokemon name
 
         //  If pokemon does not exist...
-        if (pokemonList.indexOf(starter) === -1) {
+        if (pokemonList.indexOf(starterName) === -1) {
             $("#pokemon-dne-error").text("Please select an existing Pokemon.");
         }
         //  If pokemon does exist...
         else {
             $("#pokemon-dne-error").text("");
-            usersRef.child(currentUser).update({
-                pokemonTeam: [starter]
-            });
 
-            var queryURL = `https://pokeapi.co/api/v2/pokemon/${starter.toLowerCase()}`;
+
+            var queryURL = `https://pokeapi.co/api/v2/pokemon/${starterName.toLowerCase()}`;
             $.ajax({
                 url: queryURL,
                 method: "GET"
             }).then(function (response) {
-                var pokemonSprite = response.sprites.front_default;
-                $("#pokemonPreview").html(`<img src=${pokemonSprite}>`);
-                userPartySprites.push(pokemonSprite);
+                console.log(response);
+
+                // new pokemon object
+                var starterPokemon = {
+                    spriteFront: response.sprites.front_default,
+                    spriteBack: response.sprites.back_default
+
+                };
+
+                usersRef.child(currentUser).child("pokemonTeam").child(starterName).update(starterPokemon);
+
+                $("#pokemonPreview").html(`<img src=${starterPokemon.spriteFront}>`);
+                // userPartySprites.push(pokemonSprite);
 
                 startGame();
 
