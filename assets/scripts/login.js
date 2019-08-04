@@ -4,7 +4,7 @@ $(document).ready(function () {
     var usersRef = database.ref().child("users");
     var currentUserRef;
     var pokemonList = [];
-    var userTeam = {};
+    var userTeam;
 
     function startGame() {
         setTimeout(function () {
@@ -17,6 +17,41 @@ $(document).ready(function () {
             "width": "30%"
         });
     }
+
+    function loadUserParty(location) {
+        $.each(userTeam, function (id, pokemon) {
+            $(`<img title="${id}" src="${pokemon.spriteFront}">`).appendTo($(location));
+        })
+    }
+
+    function getCurrentTime() {
+        return moment().format('LLLL');
+    }
+
+    function addPokemonToParty(species, name, previewDiv) {
+        var queryURL = `https://pokeapi.co/api/v2/pokemon/${species.toLowerCase()}`;
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).then(function (response) {
+            // new pokemon object
+            var pokemon = {
+                species: species,
+                metOn: getCurrentTime(),
+                spriteFront: response.sprites.front_default,
+                spriteBack: response.sprites.back_default
+            };
+
+            usersRef.child(currentUser).child("pokemonParty").child(name).update(pokemon);
+
+            if (previewDiv !== '') {
+                $(previewDiv).html(`<img src=${pokemon.spriteFront}>`);
+            }
+
+
+        })
+    }
+
     // FUNCTION TO AUTOCOMPLETE STARTER POKEMON CHOOSER
     $(function () {
         //RETRIEVE JSON DATA FROM API
@@ -57,10 +92,8 @@ $(document).ready(function () {
             $("#userGreeting").html(`Welcome back, &nbsp;${currentUser}`)
             //Display user current Pokemon party
             currentUserRef.on("value", function (snapshot) {
-                $.each(snapshot.val().pokemonTeam, function (id, pokemon) {
-                    $(`<img title="${id}" src="${pokemon.spriteFront}">`).appendTo($("#pokemonPartyPreview"));
-                })
-
+                userTeam = snapshot.val().pokemonParty;
+                loadUserParty("#pokemonPartyPreview");
             })
 
 
@@ -73,6 +106,7 @@ $(document).ready(function () {
         var newUsername = $("#username-input").val();
         currentUser = newUsername;
 
+        // userAccount object
         var userAccount = {
             userLocation: ''
         };
@@ -90,41 +124,23 @@ $(document).ready(function () {
 
     $("#selectStarterButton").click(function () {
 
-        var starterName = $("#pokemonSelector").val();
+        var speciesName = $("#pokemonSelector").val();
 
         //verify pokemon name
 
         //  If pokemon does not exist...
-        if (pokemonList.indexOf(starterName) === -1) {
+        if (pokemonList.indexOf(speciesName) === -1) {
             $("#pokemon-dne-error").text("Please select an existing Pokemon.");
         }
         //  If pokemon does exist...
         else {
             $("#pokemon-dne-error").text("");
 
+            var name = speciesName;
+            addPokemonToParty(speciesName, name, "#pokemonPreview");
 
-            var queryURL = `https://pokeapi.co/api/v2/pokemon/${starterName.toLowerCase()}`;
-            $.ajax({
-                url: queryURL,
-                method: "GET"
-            }).then(function (response) {
-                console.log(response);
+            startGame();
 
-                // new pokemon object
-                var starterPokemon = {
-                    spriteFront: response.sprites.front_default,
-                    spriteBack: response.sprites.back_default
-
-                };
-
-                usersRef.child(currentUser).child("pokemonTeam").child(starterName).update(starterPokemon);
-
-                $("#pokemonPreview").html(`<img src=${starterPokemon.spriteFront}>`);
-                // userPartySprites.push(pokemonSprite);
-
-                startGame();
-
-            })
 
         }
 

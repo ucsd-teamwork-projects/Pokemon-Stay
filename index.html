@@ -11,6 +11,9 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <!-- Main CSS Files -->
     <link rel="stylesheet" href='assets/styles/login.css'>
+    <!-- Browser Icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/pokeball-logo.png" />
+
 </head>
 
 <body>
@@ -54,7 +57,8 @@
                 <div class="mt-2 row">
 
                     <div class="m-2 col-12 justify-content-center">
-                        <button id="selectStarterButton" type="button" class="btn btn-success">
+                        <button id="selectStarterButton" type="button" class="btn btn-success" data-toggle="modal"
+                            data-target="#changeNameModal">
                             Select
                         </button>
                     </div>
@@ -65,7 +69,6 @@
                     </div>
 
                 </div>
-
 
             </div>
             <div id="resumeMenu" class="container">
@@ -81,7 +84,6 @@
         </div>
     </div>
 
-
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <!-- jQuery UI CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
@@ -95,8 +97,8 @@
     <!-- Firebase References -->
     <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-database.js"></script>
-    <!-- Require Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
+    <!-- Moment JS Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="assets/scripts/firebaseConfig.js"></script>
     <script src="assets/scripts/login.js"></script>
 
