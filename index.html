@@ -57,8 +57,7 @@
                 <div class="mt-2 row">
 
                     <div class="m-2 col-12 justify-content-center">
-                        <button id="selectStarterButton" type="button" class="btn btn-success" data-toggle="modal"
-                            data-target="#changeNameModal">
+                        <button id="selectStarterButton" type="button" class="btn btn-success">
                             Select
                         </button>
                     </div>
@@ -71,16 +70,42 @@
                 </div>
 
             </div>
-            <div id="resumeMenu" class="container">
+            <div id="trainerDashboard" class="container">
+                <div class="mt-2 row justify-content-center">
+                    <h2 id="userGreeting"></h2>
+                </div>
                 <div class="mt-2 row">
-                    <div class="col-12 justify-content-center">
-                        <h2 id="userGreeting"></h2>
+                    <div class="col-s-12 col-md-6 justify-content-center">
+
                         <div id="starterSelectorMessage text-center">This is your current party!</div>
-                        <br>
                         <div id="pokemonPartyPreview"></div>
+                        <button title="View all your pokemon!" id="viewPCbutton" type="button" class="btn btn-warning"
+                            data-toggle="modal" data-target="#pokemonPC">
+                            Pokemon PC&nbsp;<i class="fas fa-laptop"></i>
+                        </button>
                     </div>
                 </div>
             </div>
+            <!-- Pokemon PC Modal -->
+            <div class="modal fade" id="pokemonPC" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalCenterTitle">Pokemon PC</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div id="pokemonPCview" class="modal-body">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -94,6 +119,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
+    <!-- Font Awesome Scripts -->
+    <script src="https://kit.fontawesome.com/325ada46a1.js"></script>
     <!-- Firebase References -->
     <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-database.js"></script>

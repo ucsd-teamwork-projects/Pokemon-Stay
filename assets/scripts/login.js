@@ -2,7 +2,7 @@ $(document).ready(function () {
     ///////////////////////////////////////////////////////////
     // MAIN GAME VARIABLES
     ///////////////////////////////////////////////////////////
-    var users, userParty;
+    var users, userParty, userInventory;
     var currentUser;
 
     var usersRef = database.ref().child("users");
@@ -15,7 +15,7 @@ $(document).ready(function () {
     // PERFORM ON PAGE LOAD
     ///////////////////////////////////////////////////////////
 
-    // LOAD ALL POKEMON AND THEIR SPRITES
+    // LOAD ALL POKEMON INFO (NAMES, SPRITES, MOVES, TYPES)
     var queryURL = `https://pokeapi.co/api/v2/pokemon?limit=964`;
     $.ajax({
         url: queryURL,
@@ -29,9 +29,22 @@ $(document).ready(function () {
                 url: queryURL,
                 method: "GET"
             }).then(function (pokemonInfo) {
+                var types = [];
+                var moves = [];
+
+                $.each(pokemonInfo.types, function (id, typeInfo) {
+                    types.push(typeInfo.type.name)
+                })
+
+                $.each(pokemonInfo.moves, function (id, moveInfo) {
+                    moves.push(moveInfo.move.name);
+                })
                 pokemonList[pokemonInfo.name] = {
                     spriteFront: pokemonInfo.sprites.front_default,
-                    spriteBack: pokemonInfo.sprites.back_default
+                    spriteBack: pokemonInfo.sprites.back_default,
+                    icon: `https://img.pokemondb.net/sprites/sun-moon/icon/${pokemonInfo.name}.png`,
+                    types: types,
+                    moves: moves
                 }
             });
         })
@@ -67,8 +80,16 @@ $(document).ready(function () {
     }
 
     function loadUserParty(location) {
+        $(location).empty();
         $.each(userParty, function (id, pokemon) {
             $(`<img title="${id}" src="${getSprite(pokemon.species).front}">`).appendTo($(location));
+        })
+    }
+
+    function loadUserInventory(location) {
+        $(location).empty();
+        $.each(userInventory, function (id, pokemon) {
+            $(`<img title="${id}" src="${getSprite(pokemon.species).icon}">`).appendTo($(location));
         })
     }
 
@@ -79,7 +100,8 @@ $(document).ready(function () {
     function getSprite(pokemonName) {
         return {
             front: pokemonList[pokemonName.toLowerCase()].spriteFront,
-            back: pokemonList[pokemonName.toLowerCase()].spriteBack
+            back: pokemonList[pokemonName.toLowerCase()].spriteBack,
+            icon: pokemonList[pokemonName.toLowerCase()].icon
         };
     }
 
@@ -107,9 +129,18 @@ $(document).ready(function () {
     ///////////////////////////////////////////////////////////
 
     function startGame() {
-        setTimeout(function () {
-            $("#pokemonSelection").hide();
-        }, 3000)
+        $("#gameMenu").hide();
+        $("#pokemonSelection").hide();
+        $("#trainerDashboard").show();
+
+        //Display user greeting
+        $("#userGreeting").html(`Welcome back, &nbsp;${currentUser}`)
+
+        //Display user current Pokemon party
+        currentUserRef.on("value", function (snapshot) {
+            userParty = snapshot.val().pokemonParty;
+            loadUserParty("#pokemonPartyPreview");
+        })
     }
 
     // Checks if an account linked to the username exists
@@ -117,23 +148,11 @@ $(document).ready(function () {
         var username = $("#username-input").val();
         // verify username exists; if not, display error
         if (users.child(username).exists()) {
-            $("#gameMenu").hide();
-            $("#resumeMenu").show();
-            shrinkLogo();
-
             //Save user name locally
             currentUser = username;
             currentUserRef = usersRef.child(currentUser);
 
-            //Display user greeting
-            $("#userGreeting").html(`Welcome back, &nbsp;${currentUser}`)
-
-            //Display user current Pokemon party
-            currentUserRef.on("value", function (snapshot) {
-                userParty = snapshot.val().pokemonParty;
-                loadUserParty("#pokemonPartyPreview");
-            })
-
+            startGame();
 
         } else {
             $("#user-dne-error").html("User does not exist!<br>Please select a valid user or start a new game.")
@@ -180,6 +199,15 @@ $(document).ready(function () {
         }
 
 
+
+    })
+
+    $("#viewPCbutton").click(function () {
+        //Load user caught Pokemon
+        currentUserRef.on("value", function (snapshot) {
+            userInventory = snapshot.val().pokemonInventory;
+            loadUserInventory("#pokemonPCview");
+        })
 
     })
 

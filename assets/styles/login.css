@@ -18,13 +18,13 @@ body {
 
 #gameMenu,
 #pokemonSelection,
-#resumeMenu {
+#trainerDashboard {
     font-size: 1.5rem;
     text-align: center;
 }
 
 #pokemonSelection,
-#resumeMenu {
+#trainerDashboard {
     display: none;
 }
 
@@ -39,6 +39,10 @@ body {
     display: block;
     height: 50px;
     margin: auto;
+}
+
+#userGreeting {
+    font-weight: bold;
 }
 
 #gameDisplay {
