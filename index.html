@@ -92,7 +92,7 @@
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalCenterTitle">Pokemon PC</h5>
+                            <h5 class="modal-title" id="pokemonPCviewTitle">Pokemon PC</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -100,34 +100,83 @@
                         <div id="pokemonPCview" class="modal-body">
                         </div>
                         <div class="modal-footer">
+                            <button id="viewStatsButton" type="button" class="btn btn-info" data-toggle="modal"
+                                data-target="#inventoryPokemonInfo" style="display: none">View
+                                Stats</button>
+                            <button id="addToPartyButton" type="button" class="btn btn-success" style="display: none">
+                                Add to Party!</button>
+
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
                         </div>
                     </div>
                 </div>
             </div>
 
-        </div>
-    </div>
+            <!-- Inventory Pokemon Info Modal -->
+            <div class="modal fade" id="inventoryPokemonInfo" tabindex="-1" role="dialog"
+                aria-labelledby="inventoryPokemonInfoTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="inventoryPokemonInfoTitle"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div id="inventoryPokemonInfoTitleView" class="modal-body container">
+                            <div class="mt-2 row">
+                                <div class="col-s-12 col-md-6 justify-content-center">
+                                    <div id="inventoryPokemonPreview" class="text-center">
 
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <!-- jQuery UI CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
-    </script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
-    </script>
-    <!-- Font Awesome Scripts -->
-    <script src="https://kit.fontawesome.com/325ada46a1.js"></script>
-    <!-- Firebase References -->
-    <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-database.js"></script>
-    <!-- Moment JS Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script src="assets/scripts/firebaseConfig.js"></script>
-    <script src="assets/scripts/login.js"></script>
+                                    </div>
+
+                                </div>
+                                <div class="col-s-12 col-md-6 justify-content-center">
+                                    <div id="inventoryPokemonInfo" class="text-center">
+                                        <h3>Name: </h3>
+                                        <span id="inventoryPokemonName"> </span>
+                                        <h3>Species: </h3>
+                                        <span id="inventoryPokemonSpecies">
+                                        </span>
+                                        <h3>Met on: </h3>
+                                        <span id="inventoryPokemonDate">
+                                        </span>
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <!-- jQuery UI CDN -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+        </script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+        </script>
+        <!-- Font Awesome Scripts -->
+        <script src="https://kit.fontawesome.com/325ada46a1.js"></script>
+        <!-- Firebase References -->
+        <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-database.js"></script>
+        <!-- Moment JS Scripts -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+        <script src="assets/scripts/firebaseConfig.js"></script>
+        <script src="assets/scripts/login.js"></script>
 
 
 </body>

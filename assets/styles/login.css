@@ -5,6 +5,12 @@ body {
     /* min-width: 800px; */
 }
 
+h1,
+h2,
+h3 {
+    font-weight: bold;
+}
+
 #mainGame {
     padding: 30px;
     /* background-color: #68BEE8; */
@@ -53,6 +59,23 @@ body {
 #selectorMessage,
 #starterSelectorMessage {
     font-weight: bold;
+}
+
+.selectedInventoryPokemon {
+    border: 1px solid #52b7eb;
+}
+
+#inventoryPokemonPreview {
+    padding: 5px;
+    border: 2px double #ffcb05;
+    background-color: #fff1b9;
+}
+
+#inventoryPokemonInfo {
+    padding: 5px;
+    border: 2px double #52b7eb;
+    background-color: #a8e0fc;
+
 }
 
 #username-input,

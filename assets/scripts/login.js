@@ -82,14 +82,14 @@ $(document).ready(function () {
     function loadUserParty(location) {
         $(location).empty();
         $.each(userParty, function (id, pokemon) {
-            $(`<img title="${id}" src="${getSprite(pokemon.species).front}">`).appendTo($(location));
+            $(`<img title="${id} (${pokemon.species})" data-species="${pokemon.species}" data-name="${id}" src="${getSprite(pokemon.species).front}">`).appendTo($(location));
         })
     }
 
     function loadUserInventory(location) {
         $(location).empty();
         $.each(userInventory, function (id, pokemon) {
-            $(`<img title="${id}" src="${getSprite(pokemon.species).icon}">`).appendTo($(location));
+            $(`<img class="inventoryPokemon"  data-species="${pokemon.species}" data-name="${id}" title="${id} (${pokemon.species})" src="${getSprite(pokemon.species).icon}">`).appendTo($(location));
         })
     }
 
@@ -120,9 +120,33 @@ $(document).ready(function () {
 
     }
 
-    function verifyPokemon(species) {
+    function isPokemon(species) {
         pokemonNamesList.indexOf(species) === -1
     }
+
+    $(document).on("click", ".inventoryPokemon", function () {
+        $("#viewStatsButton").show();
+        $("#addToPartyButton").show();
+        $(".inventoryPokemon").removeClass("selectedInventoryPokemon");
+        $(this).addClass("selectedInventoryPokemon");
+
+    })
+
+    $("#viewStatsButton").click(function () {
+        var selectedPokemon = $(".selectedInventoryPokemon");
+        $("#inventoryPokemonInfoTitle").text(selectedPokemon.attr("title"));
+        $("#inventoryPokemonPreview").html(
+            `<img src="${getSprite(selectedPokemon.attr("data-species")).front}">`
+        );
+        $("#inventoryPokemonName").text(selectedPokemon.attr("data-name"));
+        $("#inventoryPokemonSpecies").text(selectedPokemon.attr("data-species"));
+        $("#inventoryPokemonDate").text(userParty[selectedPokemon.attr("data-name")].metOn);
+
+    })
+
+    $("#addToPartyButton").click(function () {
+
+    })
 
     ///////////////////////////////////////////////////////////
     // MAIN FUNCTIONS
@@ -131,7 +155,7 @@ $(document).ready(function () {
     function startGame() {
         $("#gameMenu").hide();
         $("#pokemonSelection").hide();
-        $("#trainerDashboard").show();
+        $("#trainerDashboard").fadeIn();
 
         //Display user greeting
         $("#userGreeting").html(`Welcome back, &nbsp;${currentUser}`)
@@ -175,7 +199,7 @@ $(document).ready(function () {
         // Hide Menu and Show Pokemon Selection page
         $("#gameMenu").hide();
         shrinkLogo();
-        $("#pokemonSelection").show();
+        $("#pokemonSelection").fadeIn();
 
     })
 
@@ -184,7 +208,7 @@ $(document).ready(function () {
         var speciesName = $("#pokemonSelector").val();
 
         //  If pokemon does not exist...
-        if (verifyPokemon(speciesName)) {
+        if (isPokemon(speciesName)) {
             $("#pokemon-dne-error").text("Please select an existing Pokemon.");
         }
         //  If pokemon does exist...
@@ -205,7 +229,7 @@ $(document).ready(function () {
     $("#viewPCbutton").click(function () {
         //Load user caught Pokemon
         currentUserRef.on("value", function (snapshot) {
-            userInventory = snapshot.val().pokemonInventory;
+            userInventory = snapshot.val().pokemonParty;
             loadUserInventory("#pokemonPCview");
         })
 
