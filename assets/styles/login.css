@@ -2,7 +2,7 @@ body {
     font-family: pokeFont;
     padding: 50px;
     background-image: radial-gradient(#c3e8fa, #52b7eb);
-    min-width: 800px;
+    /* min-width: 800px; */
 }
 
 #mainGame {

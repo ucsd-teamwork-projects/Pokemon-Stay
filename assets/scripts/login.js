@@ -1,26 +1,74 @@
 $(document).ready(function () {
-    var users = {};
+    ///////////////////////////////////////////////////////////
+    // MAIN GAME VARIABLES
+    ///////////////////////////////////////////////////////////
+    var users, userParty;
     var currentUser;
+
     var usersRef = database.ref().child("users");
     var currentUserRef;
-    var pokemonList = [];
-    var userTeam;
 
-    function startGame() {
-        setTimeout(function () {
-            $("#pokemonSelection").hide();
-        }, 3000)
-    }
+    var pokemonNamesList = [];
+    var pokemonList = {};
+
+    ///////////////////////////////////////////////////////////
+    // PERFORM ON PAGE LOAD
+    ///////////////////////////////////////////////////////////
+
+    // LOAD ALL POKEMON AND THEIR SPRITES
+    var queryURL = `https://pokeapi.co/api/v2/pokemon?limit=964`;
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    }).then(function (listOfPokemon) {
+        $.each(listOfPokemon.results, function (id, pokemon) {
+            var capitalizedName = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
+            pokemonNamesList.push(capitalizedName);
+            queryURL = pokemon.url;
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).then(function (pokemonInfo) {
+                pokemonList[pokemonInfo.name] = {
+                    spriteFront: pokemonInfo.sprites.front_default,
+                    spriteBack: pokemonInfo.sprites.back_default
+                }
+            });
+        })
+
+    })
+
+    ///////////////////////////////////////////////////////////
+    // FIREBASE WATCHER FUNCTIONS
+    ///////////////////////////////////////////////////////////
+
+    // Load user array on change (ie. new users were added)
+    usersRef.on("value", function (snapshot) {
+        users = snapshot;
+    });
+
+    ///////////////////////////////////////////////////////////
+    // HELPER FUNCTIONS
+    ///////////////////////////////////////////////////////////
+
+    // FUNCTION TO AUTOCOMPLETE STARTER POKEMON CHOOSER
+    $(function () {
+        // USE JQUERY UI TO AUTOCOMPLETE FORM 
+        $("#pokemonSelector").autocomplete({
+            source: pokemonNamesList
+        });
+
+    });
 
     function shrinkLogo() {
         $("#gameLogo").animate({
-            "width": "30%"
+            "width": "50%"
         });
     }
 
     function loadUserParty(location) {
-        $.each(userTeam, function (id, pokemon) {
-            $(`<img title="${id}" src="${pokemon.spriteFront}">`).appendTo($(location));
+        $.each(userParty, function (id, pokemon) {
+            $(`<img title="${id}" src="${getSprite(pokemon.species).front}">`).appendTo($(location));
         })
     }
 
@@ -28,54 +76,41 @@ $(document).ready(function () {
         return moment().format('LLLL');
     }
 
-    function addPokemonToParty(species, name, previewDiv) {
-        var queryURL = `https://pokeapi.co/api/v2/pokemon/${species.toLowerCase()}`;
-        $.ajax({
-            url: queryURL,
-            method: "GET"
-        }).then(function (response) {
-            // new pokemon object
-            var pokemon = {
-                species: species,
-                metOn: getCurrentTime(),
-                spriteFront: response.sprites.front_default,
-                spriteBack: response.sprites.back_default
-            };
-
-            usersRef.child(currentUser).child("pokemonParty").child(name).update(pokemon);
-
-            if (previewDiv !== '') {
-                $(previewDiv).html(`<img src=${pokemon.spriteFront}>`);
-            }
-
-
-        })
+    function getSprite(pokemonName) {
+        return {
+            front: pokemonList[pokemonName.toLowerCase()].spriteFront,
+            back: pokemonList[pokemonName.toLowerCase()].spriteBack
+        };
     }
 
-    // FUNCTION TO AUTOCOMPLETE STARTER POKEMON CHOOSER
-    $(function () {
-        //RETRIEVE JSON DATA FROM API
-        $.getJSON("https://pokeapi.co/api/v2/pokemon?limit=964",
-            function (response) {
-                var pokedexData = response.results;
-                // FOR EACH POKEMON IN DATA, PUSH TO LOCAL POKEDEX
-                $.each(pokedexData, function (id, pokemon) {
-                    var capitalizedName = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
-                    pokemonList.push(capitalizedName);
-                })
+    function addPokemonToParty(species, previewDiv) {
+        var name = prompt("What would you like to name this Pokemon? ('.' and '/' are not allowed)", species);
+        var pokemon = {
+            species: species,
+            metOn: getCurrentTime(),
+        };
 
-            })
-        // USE JQUERY UI TO AUTOCOMPLETE FORM 
-        $("#pokemonSelector").autocomplete({
-            source: pokemonList
-        });
+        usersRef.child(currentUser).child("pokemonParty").child(name).update(pokemon);
 
-    });
+        if (previewDiv !== '') {
+            $(previewDiv).html(`<img src=${getSprite(species).front}>`);
+        }
 
-    // Load user array on change (ie. new users were added)
-    usersRef.on("value", function (snapshot) {
-        users = snapshot;
-    });
+    }
+
+    function verifyPokemon(species) {
+        pokemonNamesList.indexOf(species) === -1
+    }
+
+    ///////////////////////////////////////////////////////////
+    // MAIN FUNCTIONS
+    ///////////////////////////////////////////////////////////
+
+    function startGame() {
+        setTimeout(function () {
+            $("#pokemonSelection").hide();
+        }, 3000)
+    }
 
     // Checks if an account linked to the username exists
     $("#resumeGameButton").click(function () {
@@ -85,14 +120,17 @@ $(document).ready(function () {
             $("#gameMenu").hide();
             $("#resumeMenu").show();
             shrinkLogo();
+
             //Save user name locally
             currentUser = username;
             currentUserRef = usersRef.child(currentUser);
+
             //Display user greeting
             $("#userGreeting").html(`Welcome back, &nbsp;${currentUser}`)
+
             //Display user current Pokemon party
             currentUserRef.on("value", function (snapshot) {
-                userTeam = snapshot.val().pokemonParty;
+                userParty = snapshot.val().pokemonParty;
                 loadUserParty("#pokemonPartyPreview");
             })
 
@@ -126,18 +164,15 @@ $(document).ready(function () {
 
         var speciesName = $("#pokemonSelector").val();
 
-        //verify pokemon name
-
         //  If pokemon does not exist...
-        if (pokemonList.indexOf(speciesName) === -1) {
+        if (verifyPokemon(speciesName)) {
             $("#pokemon-dne-error").text("Please select an existing Pokemon.");
         }
         //  If pokemon does exist...
         else {
             $("#pokemon-dne-error").text("");
 
-            var name = speciesName;
-            addPokemonToParty(speciesName, name, "#pokemonPreview");
+            addPokemonToParty(speciesName, "#pokemonPreview");
 
             startGame();
 
