@@ -30,7 +30,9 @@ h3 {
 }
 
 #pokemonSelection,
-#trainerDashboard {
+#trainerDashboard,
+#gameDisplay,
+#gameView {
     display: none;
 }
 
@@ -54,7 +56,6 @@ h3 {
 #gameDisplay {
     height: 50vh;
     padding: 20px;
-    display: none;
 }
 
 #selectorMessage,
@@ -72,7 +73,7 @@ h3 {
     background-color: #fff1b9;
 }
 
-#pokemonInfoPreview {
+#pokemonInfoSection {
     padding: 5px;
     border: 2px double #52b7eb;
     background-color: #a8e0fc;
@@ -90,6 +91,101 @@ h3 {
     width: 35vw;
     max-width: 400px;
 }
+
+#gameView {
+    text-align: center;
+    /* padding: 10px; */
+    /* background-color: white; */
+    background-color: #F5F4C0;
+    border: 10px solid #F5F4C0;
+    /* height: 450px; */
+    width: 420px;
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
+
+#battleArena {
+    /* min-height: 300px; */
+    width: 398px;
+    height: 240px;
+    position: relative;
+    border-bottom: 10px solid #F5F4C0;
+    background-image: url("../images/battleStage.png");
+    background-repeat: no-repeat;
+    background-size: auto;
+    overflow: hidden;
+}
+
+#gameMessage {
+    height: 50px;
+    border: 5px solid rgb(221, 218, 218);
+    background-color: white;
+    text-align: center;
+    font-weight: 550;
+}
+
+#gameControls {
+    height: 50px;
+    border: 5px solid #A2D7D5;
+    background-color: white;
+}
+
+.healthBar {
+    position: relative;
+    top: 10px;
+    height: 10px;
+    font-size: 0.4rem
+}
+
+#enemyInfo,
+#userInfo {
+    position: absolute;
+    padding: 10px;
+    width: 175px;
+    height: 45px;
+    background-color: rgb(247, 246, 228);
+    border: 2px double rgba(0, 0, 0, 0.685);
+
+}
+
+#enemyName,
+#userName {
+    font-size: 1rem;
+    text-align: left;
+    position: absolute;
+    top: 1px;
+}
+
+#enemyHealth,
+#userHealth {
+    border: 2px solid rgb(221, 220, 220);
+}
+
+#enemyInfo {
+    top: 20px;
+    left: 20px;
+}
+
+#userInfo {
+    bottom: 60px;
+    right: 10px;
+}
+
+#userPokemon {
+    position: absolute;
+    bottom: -30px;
+    left: 30px;
+    width: 150px;
+
+}
+
+#enemyPokemon {
+    position: absolute;
+    top: 5px;
+    right: 20px;
+    width: 125px;
+}
+
 
 .errorMessage {
     color: red;

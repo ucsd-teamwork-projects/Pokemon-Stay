@@ -270,7 +270,12 @@ $(document).ready(function () {
 
     // Checks if an account linked to the username exists
     $("#resumeGameButton").click(function () {
-        var username = $("#username-input").val();
+        var username = $("#username-input").val().trim();
+
+        if (username === '') {
+            $("#user-dne-error").html("Please enter your username!");
+        }
+
         // verify username exists; if not, display error
         if (users.child(username).exists()) {
             //Save user name locally
@@ -280,13 +285,17 @@ $(document).ready(function () {
             startGame();
 
         } else {
-            $("#user-dne-error").html("User does not exist!<br>Please select a valid user or start a new game.")
+            $("#user-dne-error").html("User does not exist!<br>Please select a valid user or start a new game.");
         }
     })
 
     $("#newGameButton").click(function () {
         var restartGame = true;
-        var newUsername = $("#username-input").val();
+        var newUsername = $("#username-input").val().trim();
+
+        if (newUsername === '') {
+            $("#user-dne-error").html("Please enter a username!");
+        }
 
         if (users.child(newUsername).exists()) {
             restartGame = confirm(`An account with the username "${newUsername}" exists. Would you still like to start a new game?`);
