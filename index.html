@@ -75,10 +75,10 @@
                     <h2 id="userGreeting"></h2>
                 </div>
                 <div class="mt-2 row">
-                    <div class="col-s-12 col-md-6 justify-content-center">
+                    <div class="col-md-6 justify-content-center">
 
                         <div id="starterSelectorMessage text-center">This is your current party!</div>
-                        <div id="pokemonPartyPreview"></div>
+                        <div id="pokemonPartyPreview" class="row"></div>
                         <button title="View all your pokemon!" id="viewPCbutton" type="button" class="btn btn-warning"
                             data-toggle="modal" data-target="#pokemonPC">
                             Pokemon PC&nbsp;<i class="fas fa-laptop"></i>
@@ -97,11 +97,17 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div id="pokemonPCview" class="modal-body">
+
+                        <div id="pokemonPCcontent" class="modal-body container">
+                            <div class="mt-2 row" id="pokemonPartyPCpreview" style="display: none">
+                            </div>
+                            <div class="mt-2 row">
+                                <div class="col-12" id="pokemonPCview"></div>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button id="viewStatsButton" type="button" class="btn btn-info" data-toggle="modal"
-                                data-target="#inventoryPokemonInfo" style="display: none">View
+                                data-target="#pokemonInfo" style="display: none">View
                                 Stats</button>
                             <button id="addToPartyButton" type="button" class="btn btn-success" style="display: none">
                                 Add to Party!</button>
@@ -113,34 +119,35 @@
                 </div>
             </div>
 
-            <!-- Inventory Pokemon Info Modal -->
-            <div class="modal fade" id="inventoryPokemonInfo" tabindex="-1" role="dialog"
-                aria-labelledby="inventoryPokemonInfoTitle" aria-hidden="true">
+            <!-- Pokemon Info Modal -->
+            <div class="modal fade" id="pokemonInfo" tabindex="-1" role="dialog" aria-labelledby="pokemonInfoTitle"
+                aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
+                    <div class="modal-content" id="pokemonInfoContent">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="inventoryPokemonInfoTitle"></h5>
+                            <h5 class="modal-title" id="pokemonInfoTitle"></h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div id="inventoryPokemonInfoTitleView" class="modal-body container">
+                        <div id="pokemonInfoTitleView" class="modal-body container">
+
                             <div class="mt-2 row">
                                 <div class="col-s-12 col-md-6 justify-content-center">
-                                    <div id="inventoryPokemonPreview" class="text-center">
+                                    <div id="pokemonInfoPreview" class="mx-auto d-block text-center">
 
                                     </div>
 
                                 </div>
                                 <div class="col-s-12 col-md-6 justify-content-center">
-                                    <div id="inventoryPokemonInfo" class="text-center">
+                                    <div id="pokemonInfo" class="text-center">
                                         <h3>Name: </h3>
-                                        <span id="inventoryPokemonName"> </span>
+                                        <span id="pokemonInfoName"> </span>
                                         <h3>Species: </h3>
-                                        <span id="inventoryPokemonSpecies">
+                                        <span id="pokemonInfoSpecies">
                                         </span>
                                         <h3>Met on: </h3>
-                                        <span id="inventoryPokemonDate">
+                                        <span id="pokemonInfoDate">
                                         </span>
 
 

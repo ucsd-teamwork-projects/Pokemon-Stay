@@ -65,17 +65,23 @@ h3 {
     border: 1px solid #52b7eb;
 }
 
-#inventoryPokemonPreview {
+#pokemonInfoContent {
     padding: 5px;
     border: 2px double #ffcb05;
     background-color: #fff1b9;
 }
 
-#inventoryPokemonInfo {
+#pokemonInfoPreview {
     padding: 5px;
     border: 2px double #52b7eb;
     background-color: #a8e0fc;
 
+}
+
+#pokemonPartyPCpreview {
+    padding: 5px;
+    border: 2px double #52eb6c;
+    background-color: #94faa5;
 }
 
 #username-input,
