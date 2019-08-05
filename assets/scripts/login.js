@@ -36,12 +36,12 @@ $(document).ready(function () {
                     $("#loading").hide();
                     $("#gameDisplay").fadeIn();
                 }
-                var types = [];
+                // var types = [];
                 // var moves = [];
 
-                $.each(pokemonInfo.types, function (id, typeInfo) {
-                    types.push(typeInfo.type.name)
-                })
+                // $.each(pokemonInfo.types, function (id, typeInfo) {
+                //     types.push(typeInfo.type.name)
+                // })
 
                 // $.each(pokemonInfo.moves, function (id, moveInfo) {
                 //     moves.push(moveInfo.move.name);
@@ -49,8 +49,8 @@ $(document).ready(function () {
                 pokemonList[pokemonInfo.name] = {
                     spriteFront: pokemonInfo.sprites.front_default,
                     spriteBack: pokemonInfo.sprites.back_default,
-                    icon: `https://img.pokemondb.net/sprites/sun-moon/icon/${pokemonInfo.name}.png`,
-                    types: types
+                    icon: `https://img.pokemondb.net/sprites/sun-moon/icon/${pokemonInfo.name}.png`
+                    // types: types
                     // moves: moves
                 }
             });
@@ -110,6 +110,12 @@ $(document).ready(function () {
 
     function loadUserInventory(location) {
         $(location).empty();
+
+        if (!userInventory) {
+            $(location).addClass("text-center");
+            $(location).text("You currently have no Pokemon in your PC \xa0:(");
+        }
+
         $.each(userInventory, function (id, pokemon) {
             $(`<img class="inventoryPokemon" data-id=${id} data-species="${pokemon.species}" data-name="${pokemon.name}" title="${pokemon.name} (${pokemon.species})" src="${getSprite(pokemon.species).icon}">`).appendTo($(location));
         })
@@ -133,7 +139,7 @@ $(document).ready(function () {
         var destinationRef;
 
         if (destination === 'party') {
-            // ERROR CHECKING TO SEE IF PARTY ALREADY HAS SIX POKEMON
+            // ADD ERROR CHECKING TO SEE IF PARTY ALREADY HAS SIX POKEMON
             destinationRef = usersRef.child(currentUser).child("pokemonParty").push();
         } else if (destination === 'pc') {
             destinationRef = usersRef.child(currentUser).child("pokemonPC").push();
@@ -151,6 +157,29 @@ $(document).ready(function () {
         if (previewDiv !== '') {
             $(previewDiv).html(`<img src=${getSprite(species).front}>`);
         }
+
+    }
+
+    function movePokemon(origin, id) {
+        var oRef, dRef, tmp;
+
+        if (origin === "party") {
+            o = userParty;
+            oRef = currentUserRef.child("pokemonParty");
+            d = userInventory;
+            dRef = currentUserRef.child("pokemonPC");
+
+        } else if (origin === "pc") {
+            o = userInventory;
+            oRef = currentUserRef.child("pokemonPC");
+            d = userParty;
+            dRef = currentUserRef.child("pokemonParty");
+        }
+        // store pokemon to be moved in a temporary variable
+        tmp = o[id];
+        console.log(id, tmp, oRef);
+        oRef.child(id).set(null);
+        dRef.child(id).set(tmp);
 
     }
 
@@ -185,7 +214,6 @@ $(document).ready(function () {
 
     $(document).on("click", ".partyPokemon", function () {
         loadPokemonInfoModal('party', $(this));
-
     })
 
     $("#viewStatsButton").click(function () {
@@ -198,6 +226,11 @@ $(document).ready(function () {
     $("#addToPartyButton").click(function () {
         loadUserParty("#pokemonPartyPCpreview", false, "partyPCpokemon");
         $("#pokemonPartyPCpreview").show();
+
+        movePokemon('pc', $(".selectedInventoryPokemon").attr("data-id"));
+        loadUserParty("#pokemonPartyPCpreview", false, "partyPCpokemon");
+
+
     })
 
     $(".partyPCpokemon").click(function () {
@@ -293,6 +326,7 @@ $(document).ready(function () {
     })
 
     $("#viewPCbutton").click(function () {
+        addNewPokemon("pc", "Entei");
         //Load user caught Pokemon
         currentUserRef.on("value", function (snapshot) {
             userInventory = snapshot.val().pokemonPC;
