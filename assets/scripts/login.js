@@ -112,7 +112,6 @@ $(document).ready(function () {
         $(location).empty();
 
         if (!userInventory) {
-            $(location).addClass("text-center");
             $(location).text("You currently have no Pokemon in your PC \xa0:(");
         }
 
@@ -177,7 +176,6 @@ $(document).ready(function () {
         }
         // store pokemon to be moved in a temporary variable
         tmp = o[id];
-        console.log(id, tmp, oRef);
         oRef.child(id).set(null);
         dRef.child(id).set(tmp);
 
@@ -226,9 +224,10 @@ $(document).ready(function () {
     $("#addToPartyButton").click(function () {
         loadUserParty("#pokemonPartyPCpreview", false, "partyPCpokemon");
         $("#pokemonPartyPCpreview").show();
-
         movePokemon('pc', $(".selectedInventoryPokemon").attr("data-id"));
         loadUserParty("#pokemonPartyPCpreview", false, "partyPCpokemon");
+        $("#viewStatsButton").hide();
+        $("#addToPartyButton").hide();
 
 
     })
@@ -286,22 +285,30 @@ $(document).ready(function () {
     })
 
     $("#newGameButton").click(function () {
+        var restartGame = true;
         var newUsername = $("#username-input").val();
-        currentUser = newUsername;
 
-        // userAccount object
-        var userAccount = {
-            userLocation: ''
-        };
+        if (users.child(newUsername).exists()) {
+            restartGame = confirm(`An account with the username "${newUsername}" exists. Would you still like to start a new game?`);
+        }
 
-        // Set new user account in Firebase realtime database
-        currentUserRef = usersRef.child(currentUser);
-        currentUserRef.set(userAccount);
+        if (restartGame) {
+            currentUser = newUsername;
 
-        // Hide Menu and Show Pokemon Selection page
-        $("#gameMenu").hide();
-        shrinkLogo();
-        $("#pokemonSelection").fadeIn();
+            // userAccount object
+            var userAccount = {
+                userLocation: ''
+            };
+
+            // Set new user account in Firebase realtime database
+            currentUserRef = usersRef.child(currentUser);
+            currentUserRef.set(userAccount);
+
+            // Hide Menu and Show Pokemon Selection page
+            $("#gameMenu").hide();
+            shrinkLogo();
+            $("#pokemonSelection").fadeIn();
+        }
 
     })
 
@@ -326,7 +333,6 @@ $(document).ready(function () {
     })
 
     $("#viewPCbutton").click(function () {
-        addNewPokemon("pc", "Entei");
         //Load user caught Pokemon
         currentUserRef.on("value", function (snapshot) {
             userInventory = snapshot.val().pokemonPC;
