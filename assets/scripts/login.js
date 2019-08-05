@@ -24,27 +24,34 @@ $(document).ready(function () {
         $.each(listOfPokemon.results, function (id, pokemon) {
             var capitalizedName = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
             pokemonNamesList.push(capitalizedName);
+
             queryURL = pokemon.url;
             $.ajax({
+
                 url: queryURL,
                 method: "GET"
             }).then(function (pokemonInfo) {
+                // Check if all pokemon have been loaded
+                if (pokemonNamesList.length === 964) {
+                    $("#loading").hide();
+                    $("#gameDisplay").fadeIn();
+                }
                 var types = [];
-                var moves = [];
+                // var moves = [];
 
                 $.each(pokemonInfo.types, function (id, typeInfo) {
                     types.push(typeInfo.type.name)
                 })
 
-                $.each(pokemonInfo.moves, function (id, moveInfo) {
-                    moves.push(moveInfo.move.name);
-                })
+                // $.each(pokemonInfo.moves, function (id, moveInfo) {
+                //     moves.push(moveInfo.move.name);
+                // })
                 pokemonList[pokemonInfo.name] = {
                     spriteFront: pokemonInfo.sprites.front_default,
                     spriteBack: pokemonInfo.sprites.back_default,
                     icon: `https://img.pokemondb.net/sprites/sun-moon/icon/${pokemonInfo.name}.png`,
-                    types: types,
-                    moves: moves
+                    types: types
+                    // moves: moves
                 }
             });
         })
@@ -91,7 +98,6 @@ $(document).ready(function () {
         }
 
         $.each(userParty, function (id, pokemon) {
-            console.log(pokemon);
             var sprite = $(`<img title="${pokemon.name} (${pokemon.species})" data-id=${id} data-species="${pokemon.species}" data-name="${pokemon.name}" src="${getSprite(pokemon.species).front}">`);
             sprite.addClass(classes);
             sprite.addClass("img-fluid");
@@ -122,7 +128,8 @@ $(document).ready(function () {
     }
 
     function addNewPokemon(destination, species, previewDiv) {
-        var name = prompt("What would you like to name this Pokemon? ('.' and '/' are not allowed)", species);
+        var name = species;
+        name = prompt("What would you like to name this Pokemon? ('.' and '/' are not allowed)", species);
         var destinationRef;
 
         if (destination === 'party') {
@@ -151,14 +158,20 @@ $(document).ready(function () {
         pokemonNamesList.indexOf(species) === -1
     }
 
-    function loadPokemonInfoModal(selectedPokemon) {
+    function loadPokemonInfoModal(origin, selectedPokemon) {
         $("#pokemonInfoTitle").text(selectedPokemon.attr("title"));
         $("#pokemonInfoPreview").html(
             `<img src="${getSprite(selectedPokemon.attr("data-species")).front}">`
         );
         $("#pokemonInfoName").text(selectedPokemon.attr("data-name"));
         $("#pokemonInfoSpecies").text(selectedPokemon.attr("data-species"));
-        $("#pokemonInfoDate").text(userParty[selectedPokemon.attr("data-id")].metOn);
+
+        if (origin === 'party') {
+            $("#pokemonInfoDate").text(userParty[selectedPokemon.attr("data-id")].metOn);
+        } else if (origin === 'pc') {
+            $("#pokemonInfoDate").text(userInventory[selectedPokemon.attr("data-id")].metOn);
+        }
+
         $('#pokemonInfo').modal('toggle')
     }
 
@@ -171,14 +184,14 @@ $(document).ready(function () {
     })
 
     $(document).on("click", ".partyPokemon", function () {
-        loadPokemonInfoModal($(this));
+        loadPokemonInfoModal('party', $(this));
 
     })
 
     $("#viewStatsButton").click(function () {
         var selectedPokemon = $(".selectedInventoryPokemon");
 
-        loadPokemonInfoModal(selectedPokemon);
+        loadPokemonInfoModal('pc', selectedPokemon);
 
     })
 
@@ -277,15 +290,12 @@ $(document).ready(function () {
 
 
         }
-
-
-
     })
 
     $("#viewPCbutton").click(function () {
         //Load user caught Pokemon
         currentUserRef.on("value", function (snapshot) {
-            userInventory = snapshot.val().pokemonParty;
+            userInventory = snapshot.val().pokemonPC;
             loadUserInventory("#pokemonPCview");
         })
 

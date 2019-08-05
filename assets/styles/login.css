@@ -54,6 +54,7 @@ h3 {
 #gameDisplay {
     height: 50vh;
     padding: 20px;
+    display: none;
 }
 
 #selectorMessage,
