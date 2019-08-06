@@ -2,7 +2,13 @@ body {
     font-family: pokeFont;
     padding: 50px;
     background-image: radial-gradient(#c3e8fa, #52b7eb);
-    min-width: 800px;
+    /* min-width: 800px; */
+}
+
+h1,
+h2,
+h3 {
+    font-weight: bold;
 }
 
 #mainGame {
@@ -16,9 +22,18 @@ body {
     max-width: 500px;
 }
 
-#gameMenu {
+#gameMenu,
+#pokemonSelection,
+#trainerDashboard {
     font-size: 1.5rem;
     text-align: center;
+}
+
+#pokemonSelection,
+#trainerDashboard,
+#gameDisplay,
+#gameView {
+    display: none;
 }
 
 #greeterPokemon {
@@ -27,10 +42,16 @@ body {
 }
 
 #newGameButton,
-#resumeGameButton {
+#resumeGameButton,
+#selectStarterButton {
     display: block;
     height: 50px;
     margin: auto;
+}
+
+#userGreeting,
+#trainerSelectionLabel {
+    font-weight: bold;
 }
 
 #gameDisplay {
@@ -38,13 +59,146 @@ body {
     padding: 20px;
 }
 
-#selectorMessage {
+#selectorMessage,
+#starterSelectorMessage {
     font-weight: bold;
 }
 
-#heroSelector {
+.selectedInventoryPokemon {
+    border: 1px solid #52b7eb;
+}
+
+#selectedTrainer {
+    border: 2px solid #05a0ee;
+}
+
+#pokemonInfoContent {
+    padding: 5px;
+    border: 2px double #ffcb05;
+    background-color: #fff1b9;
+}
+
+#pokemonInfoSection {
+    padding: 5px;
+    border: 2px double #52b7eb;
+    background-color: #a8e0fc;
+
+}
+
+#pokemonPartyPCpreview {
+    padding: 5px;
+    border: 2px double #52eb6c;
+    background-color: #94faa5;
+}
+
+#username-input,
+#pokemonSelector {
     width: 35vw;
     max-width: 400px;
+}
+
+#gameView {
+    text-align: center;
+    /* padding: 10px; */
+    /* background-color: white; */
+    background-color: #F5F4C0;
+    border: 10px solid #F5F4C0;
+    /* height: 450px; */
+    width: 420px;
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
+
+#battleArena {
+    /* min-height: 300px; */
+    width: 398px;
+    height: 240px;
+    position: relative;
+    border-bottom: 10px solid #F5F4C0;
+    background-image: url("../images/battleStage.png");
+    background-repeat: no-repeat;
+    background-size: auto;
+    overflow: hidden;
+}
+
+#gameMessage {
+    height: 50px;
+    border: 5px solid rgb(221, 218, 218);
+    background-color: white;
+    text-align: center;
+    font-weight: 550;
+}
+
+#gameControls {
+    height: 50px;
+    border: 5px solid #A2D7D5;
+    background-color: white;
+}
+
+.healthBar {
+    position: relative;
+    top: 10px;
+    height: 10px;
+    font-size: 0.4rem
+}
+
+#enemyInfo,
+#userInfo {
+    position: absolute;
+    padding: 10px;
+    width: 175px;
+    height: 45px;
+    background-color: rgb(247, 246, 228);
+    border: 2px double rgba(0, 0, 0, 0.685);
+
+}
+
+#enemyName,
+#userName {
+    font-size: 1rem;
+    text-align: left;
+    position: absolute;
+    top: 1px;
+}
+
+#enemyHealth,
+#userHealth {
+    border: 2px solid rgb(221, 220, 220);
+}
+
+#enemyInfo {
+    top: 20px;
+    left: 20px;
+}
+
+#userInfo {
+    bottom: 60px;
+    right: 10px;
+}
+
+#userPokemon {
+    position: absolute;
+    bottom: -30px;
+    left: 30px;
+    width: 150px;
+
+}
+
+#enemyPokemon {
+    position: absolute;
+    top: 5px;
+    right: 20px;
+    width: 125px;
+}
+
+
+.errorMessage {
+    color: red;
+    font-weight: bold;
+}
+
+#user-dne-error {
+    font-size: 1rem;
 }
 
 /* Import Pokemon Font */
