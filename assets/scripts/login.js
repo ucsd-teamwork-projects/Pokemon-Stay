@@ -322,6 +322,8 @@ $(document).ready(function () {
     })
 
     $(".trainer").click(function () {
+        $(".trainer").attr("id", "");
+        $(this).attr("id", "selectedTrainer");
 
     })
 
@@ -351,11 +353,24 @@ $(document).ready(function () {
         else {
             $("#pokemon-dne-error").text("");
 
-            addNewPokemon('party', speciesName);
+            // Check if a trainer has been selected
+            if (!$("#selectedTrainer").length) {
+                $("#pokemon-dne-error").text("Please select a trainer!");
+            } else {
+                $("#pokemon-dne-error").text("");
+                var selectedTrainer = $("#selectedTrainer").attr("data-trainer");
+                currentUserRef.update({
+                    trainer: selectedTrainer
+                })
+                addNewPokemon('party', speciesName);
 
-            startGame();
+                startGame();
+
+            }
 
         }
+
+
 
     })
 

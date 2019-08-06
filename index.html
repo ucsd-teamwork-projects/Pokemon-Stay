@@ -61,10 +61,11 @@
                         <p id="trainerSelectionLabel"> Choose your trainer! </p>
                         <div class="row">
                             <div class="col-6">
-                                <img class="trainer img-fluid" src="assets/images/male trainer.png">
+                                <img data-trainer="male" class="trainer img-fluid" src="assets/images/male trainer.png">
                             </div>
                             <div class="col-6">
-                                <img class="trainer img-fluid" src="assets/images/female trainer.png">
+                                <img data-trainer="female" class="trainer img-fluid"
+                                    src="assets/images/female trainer.png">
                             </div>
                         </div>
                         <label id="starterSelectorMessage" for="pokemonSelector">Choose your
@@ -76,9 +77,14 @@
                     </div>
                 </div>
                 <div class="mt-2 row">
-
                     <div class="m-2 col-12 justify-content-center">
-                        <div class="row">
+                        <div id="pokemonPreview">
+
+                        </div>
+                    </div>
+                    <div class="m-2 col-12 justify-content-center">
+
+                        <div class="row mt-2 mb-3">
                             <button id="selectStarterButton" type="button" class="col-5 offset-1 btn btn-info">
                                 View Starter
                             </button>
@@ -87,11 +93,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="m-2 col-12 justify-content-center">
-                        <div id="pokemonPreview">
 
-                        </div>
-                    </div>
 
                 </div>
 
