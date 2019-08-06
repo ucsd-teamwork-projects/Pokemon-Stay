@@ -2,7 +2,7 @@ $(document).ready(function () {
     ///////////////////////////////////////////////////////////
     // MAIN GAME VARIABLES
     ///////////////////////////////////////////////////////////
-    var users, userParty, userInventory;
+    var users, userTrainer, userParty, userInventory;
     var currentUser;
 
     var usersRef = database.ref().child("users");
@@ -98,7 +98,7 @@ $(document).ready(function () {
         }
 
         $.each(userParty, function (id, pokemon) {
-            var sprite = $(`<img title="${pokemon.name} (${pokemon.species})" data-id=${id} data-species="${pokemon.species}" data-name="${pokemon.name}" src="${getSprite(pokemon.species).front}">`);
+            var sprite = $(`<img title="${pokemon.name} (${pokemon.species})" data-id=${id} data-species="${pokemon.species}" data-name="${pokemon.name}" src="${getPokemonSprite(pokemon.species).front}">`);
             sprite.addClass(classes);
             sprite.addClass("img-fluid");
             var spriteDiv = $(`<div class='justify-content-center col-${columns}'>`).append(sprite);
@@ -116,7 +116,7 @@ $(document).ready(function () {
         }
 
         $.each(userInventory, function (id, pokemon) {
-            $(`<img class="inventoryPokemon" data-id=${id} data-species="${pokemon.species}" data-name="${pokemon.name}" title="${pokemon.name} (${pokemon.species})" src="${getSprite(pokemon.species).icon}">`).appendTo($(location));
+            $(`<img class="inventoryPokemon" data-id=${id} data-species="${pokemon.species}" data-name="${pokemon.name}" title="${pokemon.name} (${pokemon.species})" src="${getPokemonSprite(pokemon.species).icon}">`).appendTo($(location));
         })
     }
 
@@ -124,12 +124,30 @@ $(document).ready(function () {
         return moment().format('LLLL');
     }
 
-    function getSprite(pokemonName) {
+    function getPokemonSprite(pokemonName) {
         return {
             front: pokemonList[pokemonName.toLowerCase()].spriteFront,
             back: pokemonList[pokemonName.toLowerCase()].spriteBack,
             icon: pokemonList[pokemonName.toLowerCase()].icon
         };
+    }
+
+    function getTrainerSprite(trainer) {
+        var sprite, icon;
+        if (trainer === "male") {
+            sprite = "assets/images/maleSprite.png";
+            icon = "assets/images/maleIcon.png";
+        } else if (trainer === "female") {
+            sprite = "assets/images/femaleSprite.png";
+            icon = "assets/images/femaleIcon.png";
+        }
+
+        var request = {
+            sprite: sprite,
+            icon: icon
+        }
+
+        return request;
     }
 
     function addNewPokemon(destination, species, previewDiv) {
@@ -154,7 +172,7 @@ $(document).ready(function () {
         destinationRef.update(pokemon);
 
         if (previewDiv !== '') {
-            $(previewDiv).html(`<img src=${getSprite(species).front}>`);
+            $(previewDiv).html(`<img src=${getPokemonSprite(species).front}>`);
         }
 
     }
@@ -188,7 +206,7 @@ $(document).ready(function () {
     function loadPokemonInfoModal(origin, selectedPokemon) {
         $("#pokemonInfoTitle").text(selectedPokemon.attr("title"));
         $("#pokemonInfoPreview").html(
-            `<img src="${getSprite(selectedPokemon.attr("data-species")).front}">`
+            `<img src="${getPokemonSprite(selectedPokemon.attr("data-species")).front}">`
         );
         $("#pokemonInfoName").text(selectedPokemon.attr("data-name"));
         $("#pokemonInfoSpecies").text(selectedPokemon.attr("data-species"));
@@ -248,7 +266,6 @@ $(document).ready(function () {
     });
 
 
-
     ///////////////////////////////////////////////////////////
     // MAIN FUNCTIONS
     ///////////////////////////////////////////////////////////
@@ -259,13 +276,18 @@ $(document).ready(function () {
         $("#trainerDashboard").fadeIn();
 
         //Display user greeting
-        $("#userGreeting").html(`Welcome back, &nbsp;${currentUser}`)
+        $("#userGreeting").html(`Welcome back, &nbsp;${currentUser}`);
 
         //Display user current Pokemon party
         currentUserRef.on("value", function (snapshot) {
             userParty = snapshot.val().pokemonParty;
+            userTrainer = snapshot.val().trainer;
             loadUserParty("#pokemonPartyPreview", true, "partyPokemon");
         })
+
+        console.log(userTrainer);
+        $("#trainerPreview").html(`<img src=${getTrainerSprite(userTrainer).sprite}>`);
+
     }
 
     // Checks if an account linked to the username exists
@@ -339,7 +361,7 @@ $(document).ready(function () {
         else {
             $("#pokemon-dne-error").text("");
 
-            $("#pokemonPreview").html(`<img src=${getSprite(speciesName).front}>`);
+            $("#pokemonPreview").html(`<img src=${getPokemonSprite(speciesName).front}>`);
         }
     })
 
