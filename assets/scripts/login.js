@@ -17,48 +17,58 @@ $(document).ready(function () {
     // PERFORM ON PAGE LOAD
     ///////////////////////////////////////////////////////////
 
-    // LOAD ALL POKEMON INFO (NAMES, SPRITES, MOVES, TYPES)
-    var queryURL = `https://pokeapi.co/api/v2/pokemon?limit=964`;
-    $.ajax({
-        url: queryURL,
-        method: "GET"
-    }).then(function (listOfPokemon) {
-        $.each(listOfPokemon.results, function (id, pokemon) {
-            var capitalizedName = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
-            pokemonNamesList.push(capitalizedName);
+    // Load game info if not already loaded in local storage
+    if (!localStorage.getItem("pokemonList") && !localStorage.getItem("pokemonNamesList")) {
+        // LOAD ALL POKEMON INFO (NAMES, SPRITES, MOVES, TYPES)
+        var queryURL = `https://pokeapi.co/api/v2/pokemon?limit=964`;
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).then(function (listOfPokemon) {
+            $.each(listOfPokemon.results, function (id, pokemon) {
+                var capitalizedName = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
+                pokemonNamesList.push(capitalizedName);
 
-            queryURL = pokemon.url;
-            $.ajax({
+                queryURL = pokemon.url;
+                $.ajax({
 
-                url: queryURL,
-                method: "GET"
-            }).then(function (pokemonInfo) {
-                // Check if all pokemon have been loaded
-                if (pokemonNamesList.length === 964) {
-                    $("#loading").hide();
-                    $("#gameDisplay").fadeIn();
-                }
-                // var types = [];
-                // var moves = [];
+                    url: queryURL,
+                    method: "GET"
+                }).then(function (pokemonInfo) {
+                    // Check if all pokemon have been loaded
+                    if (pokemonNamesList.length === 964) {
+                        localStorage.setItem("pokemonList", JSON.stringify(pokemonList));
+                        localStorage.setItem("pokemonNamesList", JSON.stringify(pokemonNamesList));
+                        $("#loading").hide();
+                        $("#gameDisplay").fadeIn();
+                    }
+                    // var types = [];
+                    // var moves = [];
 
-                // $.each(pokemonInfo.types, function (id, typeInfo) {
-                //     types.push(typeInfo.type.name)
-                // })
+                    // $.each(pokemonInfo.types, function (id, typeInfo) {
+                    //     types.push(typeInfo.type.name)
+                    // })
 
-                // $.each(pokemonInfo.moves, function (id, moveInfo) {
-                //     moves.push(moveInfo.move.name);
-                // })
-                pokemonList[pokemonInfo.name] = {
-                    spriteFront: pokemonInfo.sprites.front_default,
-                    spriteBack: pokemonInfo.sprites.back_default,
-                    icon: `https://img.pokemondb.net/sprites/sun-moon/icon/${pokemonInfo.name}.png`
-                    // types: types
-                    // moves: moves
-                }
-            });
+                    // $.each(pokemonInfo.moves, function (id, moveInfo) {
+                    //     moves.push(moveInfo.move.name);
+                    // })
+                    pokemonList[pokemonInfo.name] = {
+                        spriteFront: pokemonInfo.sprites.front_default,
+                        spriteBack: pokemonInfo.sprites.back_default,
+                        icon: `https://img.pokemondb.net/sprites/sun-moon/icon/${pokemonInfo.name}.png`
+                        // types: types
+                        // moves: moves
+                    }
+                });
+            })
+
         })
-
-    })
+    } else {
+        pokemonList = JSON.parse(localStorage.getItem("pokemonList"));
+        pokemonNamesList = JSON.parse(localStorage.getItem("pokemonNamesList"));
+        $("#loading").hide();
+        $("#gameDisplay").fadeIn();
+    }
 
     ///////////////////////////////////////////////////////////
     // FIREBASE WATCHER FUNCTIONS
@@ -628,6 +638,7 @@ $(document).ready(function () {
     ///////////////////////////////////////////////////////////
 
     function showTrainerDash() {
+        shrinkLogo();
         $("#gameMenu").hide();
         $("#pokemonSelection").hide();
         $("#trainerDashboard").fadeIn();
