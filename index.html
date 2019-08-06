@@ -108,23 +108,39 @@
                         <span id="trainerPreview"></span>
                     </div> -->
 
-                    <div class="col-lg-6 mb-4 justify-content-center">
+                    <div class="col-12 justify-content-center mapContainer">
+                        <span id="formattedLastLocation">
+                        </span>
 
-                        <div id="starterSelectorMessage text-center">This is your current party!</div>
-                        <div id="pokemonPartyPreview" class="row"></div>
-                        <button title="View all your pokemon!" id="viewPCbutton" type="button" class="btn btn-warning"
-                            data-toggle="modal" data-target="#pokemonPC">
-                            Pokemon PC&nbsp;<i class="fas fa-laptop"></i>
-                        </button>
-                    </div>
-                    <div class="col-lg-6 justify-content-center mapContainer">
                         <div id="lastLocationPreview">
                             <!-- Map showing user's current location in game -->
                         </div>
                     </div>
-
-
                 </div>
+
+                <div class="row">
+                    <div class="col-12 mb-4 justify-content-center">
+                        <!-- 
+                        <div id="starterSelectorMessage">This is your current party!</div>
+                        <div id="pokemonPartyPreview" class="row"></div> -->
+                        <button title="View your stored pokemon!" id="viewPCbutton" type="button"
+                            class="btn btn-warning mt-2" data-toggle="modal" data-target="#pokemonPC">
+                            Pokemon PC&nbsp;<i class="fas fa-laptop"></i>
+                        </button>
+                        <button title="View the pokemon traveling with you!" id="viewPartyButton" type="button"
+                            class="btn btn-info mt-2" data-toggle="modal" data-target="#pokemonParty">
+                            Pokemon Party&nbsp;<i class="fas fa-shield-alt"></i>
+                        </button>
+                        <button title="Start Exploring!" id="startButton" type="button" class="btn btn-success mt-2"
+                            data-toggle="modal" data-target="#">
+                            Start Catchin'&nbsp;<i class="fas fa-globe-americas"></i>
+                            <!-- <i class="far fa-compass"></i> -->
+                        </button>
+                    </div>
+                </div>
+
+
+
             </div> <!-- Battle Arena Screen -->
             <div id="gameView" class="container justify-content-center">
                 <div id="battleArena" class="row justify-content-center">
@@ -174,11 +190,41 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button id="viewStatsButton" type="button" class="btn btn-info" data-toggle="modal"
+                            <button id="viewPCstatsButton" type="button" class="btn btn-info" data-toggle="modal"
                                 data-target="#pokemonInfo" style="display: none">View
                                 Stats</button>
                             <button id="addToPartyButton" type="button" class="btn btn-success" style="display: none">
                                 Add to Party!</button>
+
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Pokemon Party Modal -->
+            <div class="modal fade" id="pokemonParty" tabindex="-1" role="dialog"
+                aria-labelledby="pokemonPartyViewTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="pokemonPartyViewTitle">Pokemon Party</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <div id="pokemonPartyContent" class="modal-body container">
+                            <div class="mt-2 row">
+                                <div class="col-12 text-center" id="pokemonPartyView"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="viewPartyStatsButton" type="button" class="btn btn-info" data-toggle="modal"
+                                data-target="#pokemonInfo" style="display: none">View
+                                Stats</button>
+                            <button id="addToPCbutton" type="button" class="btn btn-success" style="display: none">
+                                Send to PC!</button>
 
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 
@@ -232,7 +278,8 @@
             </div>
         </div>
 
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZmVVrzQvtHpLiBl5N7jWbKH0MlLRt2sM">
+        <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZmVVrzQvtHpLiBl5N7jWbKH0MlLRt2sM&sensor=false">
         </script>
         <!-- jQuery UI -->
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>

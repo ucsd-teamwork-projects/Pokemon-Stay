@@ -11,7 +11,7 @@ $(document).ready(function () {
     var pokemonNamesList = [];
     var pokemonList = {};
 
-    var map, infoWindow;
+    var map, infoWindow, geocoder;
 
     ///////////////////////////////////////////////////////////
     // PERFORM ON PAGE LOAD
@@ -93,10 +93,12 @@ $(document).ready(function () {
         // The number of columns each sprite should occupy
         var columns = '2';
 
-        if (wrapSprites && Object.keys(userParty).length <= 4) {
-            columns = '6';
-        } else if (wrapSprites && Object.keys(userParty).length > 4) {
-            columns = '4';
+        if (userParty) {
+            if (wrapSprites && Object.keys(userParty).length <= 4) {
+                columns = '6';
+            } else if (wrapSprites && Object.keys(userParty).length > 4) {
+                columns = '4';
+            }
         }
 
         $.each(userParty, function (id, pokemon) {
@@ -267,6 +269,25 @@ $(document).ready(function () {
             handleLocationError(false, infoWindow, map.getCenter());
         }
         currentUserRef.set(userAccount);
+
+    }
+
+    function getFormattedAddress(coord) {
+        geocoder = new google.maps.Geocoder;
+
+        geocoder.geocode({
+            'location': coord
+        }, function (results, status) {
+            if (status === 'OK') {
+                if (results[0]) {
+                    return results[0].formatted_address;
+                } else {
+                    window.alert('No results found');
+                }
+            } else {
+                window.alert('Geocoder failed due to: ' + status);
+            }
+        });
 
     }
 
@@ -495,7 +516,7 @@ $(document).ready(function () {
     }
 
     $(document).on("click", ".inventoryPokemon", function () {
-        $("#viewStatsButton").show();
+        $("#viewPCstatsButton").show();
         $("#addToPartyButton").show();
         $(".inventoryPokemon").removeClass("selectedInventoryPokemon");
         $(this).addClass("selectedInventoryPokemon");
@@ -503,13 +524,24 @@ $(document).ready(function () {
     })
 
     $(document).on("click", ".partyPokemon", function () {
-        loadPokemonInfoModal('party', $(this));
+        $("#viewPartyStatsButton").show();
+        $("#addToPCbutton").show();
+        $(".partyPokemon").removeClass("selectedPartyPokemon");
+        $(this).addClass("selectedPartyPokemon");
+        // loadPokemonInfoModal('party', $(this));
     })
 
-    $("#viewStatsButton").click(function () {
+    $("#viewPCstatsButton").click(function () {
         var selectedPokemon = $(".selectedInventoryPokemon");
 
         loadPokemonInfoModal('pc', selectedPokemon);
+
+    })
+
+    $("#viewPartyStatsButton").click(function () {
+        var selectedPokemon = $(".selectedPartyPokemon");
+
+        loadPokemonInfoModal('party', selectedPokemon);
 
     })
 
@@ -518,10 +550,17 @@ $(document).ready(function () {
         $("#pokemonPartyPCpreview").show();
         movePokemon('pc', $(".selectedInventoryPokemon").attr("data-id"));
         loadUserParty("#pokemonPartyPCpreview", false, "partyPCpokemon");
-        $("#viewStatsButton").hide();
+        $("#viewPCstatsButton").hide();
         $("#addToPartyButton").hide();
 
 
+    })
+
+    $("#addToPCbutton").click(function () {
+        // Add confirmation modal
+        movePokemon('party', $(".selectedPartyPokemon").attr("data-id"));
+        $("#viewPartyStatsButton").hide();
+        $("#addToPCbutton").hide();
     })
 
     $(".partyPCpokemon").click(function () {
@@ -533,10 +572,15 @@ $(document).ready(function () {
     })
 
     $('#pokemonPC').on('hidden.bs.modal', function () {
-        $("#viewStatsButton").hide();
+        $("#viewPCstatsButton").hide();
         $("#addToPartyButton").hide();
         $("#pokemonPartyPCpreview").hide();
 
+    });
+
+    $('#pokemonParty').on('hidden.bs.modal', function () {
+        $("#viewPartyStatsButton").hide();
+        $("#addToPCbutton").hide();
     });
 
     $(".trainer").click(function () {
@@ -550,6 +594,15 @@ $(document).ready(function () {
         currentUserRef.on("value", function (snapshot) {
             userInventory = snapshot.val().pokemonPC;
             loadUserInventory("#pokemonPCview");
+        })
+
+    })
+
+    $("#viewPartyButton").click(function () {
+        //Load user party Pokemon
+        currentUserRef.on("value", function (snapshot) {
+            userParty = snapshot.val().pokemonParty;
+            loadUserParty("#pokemonPartyView", true, "partyPokemon");
         })
 
     })
@@ -574,11 +627,12 @@ $(document).ready(function () {
             userParty = snapshot.val().pokemonParty;
             userTrainer = snapshot.val().trainer;
             userLocation = snapshot.val().userLocation;
-            loadUserParty("#pokemonPartyPreview", true, "partyPokemon");
+            // loadUserParty("#pokemonPartyPreview", true, "partyPokemon");
         })
 
-        $("#trainerPreview").html(`<img src=${getTrainerSprite(userTrainer).sprite}>`);
+        // $("#trainerPreview").html(`<img src=${getTrainerSprite(userTrainer).sprite}>`);
         loadLastUserLocation("lastLocationPreview");
+        $("#formattedLastLocation").html(`You are currently at: <strong> ${getFormattedAddress(userLocation)} </strong>`)
 
     }
 
