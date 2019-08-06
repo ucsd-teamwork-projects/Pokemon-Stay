@@ -252,6 +252,7 @@ $(document).ready(function () {
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
+                console.log(position);
                 var pos = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
@@ -272,22 +273,34 @@ $(document).ready(function () {
 
     }
 
-    function getFormattedAddress(coord) {
-        geocoder = new google.maps.Geocoder;
+    function showFormattedAddress(coord) {
+        // Using LocationIQ API
 
-        geocoder.geocode({
-            'location': coord
-        }, function (results, status) {
-            if (status === 'OK') {
-                if (results[0]) {
-                    return results[0].formatted_address;
-                } else {
-                    window.alert('No results found');
-                }
-            } else {
-                window.alert('Geocoder failed due to: ' + status);
-            }
+        var key = "e67dbc1c1f9456";
+        var queryURL = `https://us1.locationiq.com/v1/reverse.php?key=${key}&lat=${coord.lat}&lon=${coord.lng}&format=json`;
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).then(function (result) {
+            $("#formattedLastLocation").html(`You are currently at: <strong> ${result.display_name} </strong>`)
         });
+        // Using Google Map Reverse Geocoding API
+        // geocoder = new google.maps.Geocoder;
+
+        // geocoder.geocode({
+        //     'location': coord
+        // }, function (results, status) {
+        //     if (status === 'OK') {
+        //         if (results[0]) {
+        //             return results[0].formatted_address;
+        //         } else {
+        //             window.alert('No results found');
+        //         }
+        //     } else {
+        //         window.alert('Geocoder failed due to: ' + status);
+        //     }
+        // });
+
 
     }
 
@@ -632,8 +645,7 @@ $(document).ready(function () {
 
         // $("#trainerPreview").html(`<img src=${getTrainerSprite(userTrainer).sprite}>`);
         loadLastUserLocation("lastLocationPreview");
-        $("#formattedLastLocation").html(`You are currently at: <strong> ${getFormattedAddress(userLocation)} </strong>`)
-
+        showFormattedAddress(userLocation)
     }
 
     // Checks if an account linked to the username exists

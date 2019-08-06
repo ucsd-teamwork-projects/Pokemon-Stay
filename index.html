@@ -103,15 +103,17 @@
                 <div class="mt-2 row justify-content-center">
                     <h2 id="userGreeting"></h2>
                 </div>
-                <div class="mt-2 mb-5 row">
+
+                <div class="row justify-content-center">
+                    <span id="formattedLastLocation">
+                    </span>
+                </div>
+                <div class="mt-2 mb-3 row">
                     <!-- <div class="col-md-4 justify-content-center">
                         <span id="trainerPreview"></span>
                     </div> -->
 
                     <div class="col-12 justify-content-center mapContainer">
-                        <span id="formattedLastLocation">
-                        </span>
-
                         <div id="lastLocationPreview">
                             <!-- Map showing user's current location in game -->
                         </div>
@@ -128,10 +130,10 @@
                             Pokemon PC&nbsp;<i class="fas fa-laptop"></i>
                         </button>
                         <button title="View the pokemon traveling with you!" id="viewPartyButton" type="button"
-                            class="btn btn-info mt-2" data-toggle="modal" data-target="#pokemonParty">
+                            class="btn btn-info mt-2 ml-2" data-toggle="modal" data-target="#pokemonParty">
                             Pokemon Party&nbsp;<i class="fas fa-shield-alt"></i>
                         </button>
-                        <button title="Start Exploring!" id="startButton" type="button" class="btn btn-success mt-2"
+                        <button title="Start Exploring!" id="startButton" type="button" class="btn btn-success mt-2 ml-2"
                             data-toggle="modal" data-target="#">
                             Start Catchin'&nbsp;<i class="fas fa-globe-americas"></i>
                             <!-- <i class="far fa-compass"></i> -->
@@ -278,8 +280,7 @@
             </div>
         </div>
 
-        <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZmVVrzQvtHpLiBl5N7jWbKH0MlLRt2sM&sensor=false">
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZmVVrzQvtHpLiBl5N7jWbKH0MlLRt2sM">
         </script>
         <!-- jQuery UI -->
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
