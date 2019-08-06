@@ -182,7 +182,7 @@ $(document).ready(function () {
     }
 
     function isPokemon(species) {
-        pokemonNamesList.indexOf(species) === -1
+        return pokemonNamesList.indexOf(species) === -1
     }
 
     function loadPokemonInfoModal(origin, selectedPokemon) {
@@ -321,6 +321,10 @@ $(document).ready(function () {
 
     })
 
+    $(".trainer").click(function () {
+
+    })
+
     $("#selectStarterButton").click(function () {
 
         var speciesName = $("#pokemonSelector").val();
@@ -333,12 +337,26 @@ $(document).ready(function () {
         else {
             $("#pokemon-dne-error").text("");
 
-            addNewPokemon('party', speciesName, "#pokemonPreview");
+            $("#pokemonPreview").html(`<img src=${getSprite(speciesName).front}>`);
+        }
+    })
+
+    $("#initializeUserButton").click(function () {
+        var speciesName = $("#pokemonSelector").val();
+        //  If pokemon does not exist...
+        if (isPokemon(speciesName)) {
+            $("#pokemon-dne-error").text("Please select an existing Pokemon.");
+        }
+        //  If pokemon does exist...
+        else {
+            $("#pokemon-dne-error").text("");
+
+            addNewPokemon('party', speciesName);
 
             startGame();
 
-
         }
+
     })
 
     $("#viewPCbutton").click(function () {
