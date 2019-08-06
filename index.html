@@ -103,16 +103,12 @@
                 <div class="mt-2 row justify-content-center">
                     <h2 id="userGreeting"></h2>
                 </div>
-                <div class="mt-2 row">
-                    <div class="col-md-4 justify-content center">
+                <div class="mt-2 mb-5 row">
+                    <!-- <div class="col-md-4 justify-content-center">
                         <span id="trainerPreview"></span>
-                    </div>
-                    <div class="col-md-4 justify-content center">
-                        <div id="lastLocationPreview">
-                            <!-- Map showing user's current location in game -->
-                        </div>
-                    </div>
-                    <div class="col-md-4 justify-content-center">
+                    </div> -->
+
+                    <div class="col-lg-6 mb-4 justify-content-center">
 
                         <div id="starterSelectorMessage text-center">This is your current party!</div>
                         <div id="pokemonPartyPreview" class="row"></div>
@@ -121,6 +117,12 @@
                             Pokemon PC&nbsp;<i class="fas fa-laptop"></i>
                         </button>
                     </div>
+                    <div class="col-lg-6 justify-content-center mapContainer">
+                        <div id="lastLocationPreview">
+                            <!-- Map showing user's current location in game -->
+                        </div>
+                    </div>
+
 
                 </div>
             </div> <!-- Battle Arena Screen -->
@@ -230,6 +232,9 @@
             </div>
         </div>
 
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZmVVrzQvtHpLiBl5N7jWbKH0MlLRt2sM">
+        </script>
+        <!-- jQuery UI -->
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
         <!-- jQuery UI CDN -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
@@ -249,6 +254,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
         <script src="assets/scripts/firebaseConfig.js"></script>
         <script src="assets/scripts/login.js"></script>
+
 
 
 </body>

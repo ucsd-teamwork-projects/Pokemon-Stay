@@ -11,6 +11,8 @@ $(document).ready(function () {
     var pokemonNamesList = [];
     var pokemonList = {};
 
+    var map, infoWindow;
+
     ///////////////////////////////////////////////////////////
     // PERFORM ON PAGE LOAD
     ///////////////////////////////////////////////////////////
@@ -136,10 +138,10 @@ $(document).ready(function () {
         var sprite, icon;
         if (trainer === "male") {
             sprite = "assets/images/maleSprite.png";
-            icon = "assets/images/maleIcon.png";
+            icon = "https://i.ibb.co/6cMNgPY/maleIcon.png";
         } else if (trainer === "female") {
             sprite = "assets/images/femaleSprite.png";
-            icon = "assets/images/femaleIcon.png";
+            icon = "https://i.ibb.co/8Xt4m42/female-Icon.png";
         }
 
         var request = {
@@ -220,6 +222,278 @@ $(document).ready(function () {
         $('#pokemonInfo').modal('toggle')
     }
 
+    function loadLastUserLocation(divID) {
+        initMap(divID);
+
+        var marker = new google.maps.Marker({
+            position: userLocation,
+            title: currentUser,
+            icon: getTrainerSprite(userTrainer).icon
+        });
+
+        // To add the marker to the map, call setMap();
+        marker.setMap(map);
+        map.setCenter(userLocation);
+
+    }
+
+    function setUserStartLocation() {
+        // DEFAULT USER LOCATION (TOKYO, JAPAN)
+        var userAccount = {
+            userLocation: {
+                lat: 35.6804,
+                lng: 139.7690
+            }
+        };
+
+
+        // Try HTML5 geolocation.
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var pos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                userAccount.userLocation = pos;
+                currentUserRef.set(userAccount);
+
+
+            }, function () {
+                handleLocationError(true, infoWindow, map.getCenter());
+            });
+        } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infoWindow, map.getCenter());
+        }
+        currentUserRef.set(userAccount);
+
+    }
+
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+            'Error: The Geolocation service failed.' :
+            'Error: Your browser doesn\'t support geolocation.');
+        infoWindow.open(map);
+    }
+
+    function initMap(divID) {
+        map = new google.maps.Map(document.getElementById(divID), {
+            center: {
+                lat: -25.363882,
+                lng: 131.044922
+            },
+            zoom: 18,
+            mapTypeId: 'satellite',
+            zoomControl: false,
+            mapTypeControl: false,
+            scaleControl: false,
+            streetViewControl: false,
+            rotateControl: false,
+            fullscreenControl: true,
+            styles: [{
+                "featureType": "administrative",
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "visibility": "on"
+                }, {
+                    "color": "#f1ffb8"
+                }, {
+                    "weight": "2.29"
+                }]
+            }, {
+                "featureType": "administrative.land_parcel",
+                "elementType": "all",
+                "stylers": [{
+                    "visibility": "on"
+                }]
+            }, {
+                "featureType": "landscape.man_made",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                    "color": "#a1f199"
+                }]
+            }, {
+                "featureType": "landscape.man_made",
+                "elementType": "labels.text",
+                "stylers": [{
+                    "visibility": "on"
+                }, {
+                    "hue": "#ff0000"
+                }]
+            }, {
+                "featureType": "landscape.natural.landcover",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                    "color": "#37bda2"
+                }]
+            }, {
+                "featureType": "landscape.natural.terrain",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                    "color": "#37bda2"
+                }]
+            }, {
+                "featureType": "poi",
+                "elementType": "labels",
+                "stylers": [{
+                    "visibility": "on"
+                }, {
+                    "color": "#afa0a0"
+                }]
+            }, {
+                "featureType": "poi",
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "visibility": "on"
+                }, {
+                    "color": "#f1ffb8"
+                }]
+            }, {
+                "featureType": "poi.attraction",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                    "visibility": "on"
+                }]
+            }, {
+                "featureType": "poi.business",
+                "elementType": "all",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            }, {
+                "featureType": "poi.business",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                    "color": "#e4dfd9"
+                }]
+            }, {
+                "featureType": "poi.business",
+                "elementType": "labels.icon",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            }, {
+                "featureType": "poi.government",
+                "elementType": "all",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            }, {
+                "featureType": "poi.medical",
+                "elementType": "all",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            }, {
+                "featureType": "poi.park",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                    "color": "#37bda2"
+                }]
+            }, {
+                "featureType": "poi.place_of_worship",
+                "elementType": "all",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            }, {
+                "featureType": "poi.school",
+                "elementType": "all",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            }, {
+                "featureType": "poi.sports_complex",
+                "elementType": "all",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            }, {
+                "featureType": "road",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                    "color": "#84b09e"
+                }]
+            }, {
+                "featureType": "road",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                    "color": "#fafeb8"
+                }, {
+                    "weight": "1.25"
+                }, {
+                    "visibility": "on"
+                }]
+            }, {
+                "featureType": "road",
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "visibility": "on"
+                }, {
+                    "color": "#f1ffb8"
+                }]
+            }, {
+                "featureType": "road.highway",
+                "elementType": "labels.icon",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            }, {
+                "featureType": "road.arterial",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                    "visibility": "on"
+                }, {
+                    "color": "#f1ffb8"
+                }]
+            }, {
+                "featureType": "road.arterial",
+                "elementType": "labels.text.stroke",
+                "stylers": [{
+                    "visibility": "on"
+                }, {
+                    "color": "#f1ffb8"
+                }]
+            }, {
+                "featureType": "road.local",
+                "elementType": "geometry.stroke",
+                "stylers": [{
+                    "visibility": "on"
+                }, {
+                    "color": "#f1ffb8"
+                }, {
+                    "weight": "1.48"
+                }]
+            }, {
+                "featureType": "road.local",
+                "elementType": "labels",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            }, {
+                "featureType": "transit",
+                "elementType": "all",
+                "stylers": [{
+                    "visibility": "off"
+                }]
+            }, {
+                "featureType": "water",
+                "elementType": "geometry.fill",
+                "stylers": [{
+                    "color": "#5ddad6"
+                }]
+            }]
+
+        });
+
+        map.setTilt(65);
+
+        infoWindow = new google.maps.InfoWindow;
+
+    }
+
     $(document).on("click", ".inventoryPokemon", function () {
         $("#viewStatsButton").show();
         $("#addToPartyButton").show();
@@ -265,12 +539,29 @@ $(document).ready(function () {
 
     });
 
+    $(".trainer").click(function () {
+        $(".trainer").attr("id", "");
+        $(this).attr("id", "selectedTrainer");
+
+    })
+
+    $("#viewPCbutton").click(function () {
+        //Load user caught Pokemon
+        currentUserRef.on("value", function (snapshot) {
+            userInventory = snapshot.val().pokemonPC;
+            loadUserInventory("#pokemonPCview");
+        })
+
+    })
+
+
+
 
     ///////////////////////////////////////////////////////////
     // MAIN FUNCTIONS
     ///////////////////////////////////////////////////////////
 
-    function startGame() {
+    function showTrainerDash() {
         $("#gameMenu").hide();
         $("#pokemonSelection").hide();
         $("#trainerDashboard").fadeIn();
@@ -282,11 +573,12 @@ $(document).ready(function () {
         currentUserRef.on("value", function (snapshot) {
             userParty = snapshot.val().pokemonParty;
             userTrainer = snapshot.val().trainer;
+            userLocation = snapshot.val().userLocation;
             loadUserParty("#pokemonPartyPreview", true, "partyPokemon");
         })
 
-        console.log(userTrainer);
         $("#trainerPreview").html(`<img src=${getTrainerSprite(userTrainer).sprite}>`);
+        loadLastUserLocation("lastLocationPreview");
 
     }
 
@@ -304,7 +596,7 @@ $(document).ready(function () {
             currentUser = username;
             currentUserRef = usersRef.child(currentUser);
 
-            startGame();
+            showTrainerDash();
 
         } else {
             $("#user-dne-error").html("User does not exist!<br>Please select a valid user or start a new game.");
@@ -326,26 +618,15 @@ $(document).ready(function () {
         if (restartGame) {
             currentUser = newUsername;
 
-            // userAccount object
-            var userAccount = {
-                userLocation: ''
-            };
-
             // Set new user account in Firebase realtime database
             currentUserRef = usersRef.child(currentUser);
-            currentUserRef.set(userAccount);
+            setUserStartLocation();
 
             // Hide Menu and Show Pokemon Selection page
             $("#gameMenu").hide();
             shrinkLogo();
             $("#pokemonSelection").fadeIn();
         }
-
-    })
-
-    $(".trainer").click(function () {
-        $(".trainer").attr("id", "");
-        $(this).attr("id", "selectedTrainer");
 
     })
 
@@ -384,9 +665,10 @@ $(document).ready(function () {
                 currentUserRef.update({
                     trainer: selectedTrainer
                 })
+
                 addNewPokemon('party', speciesName);
 
-                startGame();
+                showTrainerDash();
 
             }
 
@@ -396,13 +678,6 @@ $(document).ready(function () {
 
     })
 
-    $("#viewPCbutton").click(function () {
-        //Load user caught Pokemon
-        currentUserRef.on("value", function (snapshot) {
-            userInventory = snapshot.val().pokemonPC;
-            loadUserInventory("#pokemonPCview");
-        })
 
-    })
 
 })
