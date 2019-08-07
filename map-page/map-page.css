@@ -1,19 +1,9 @@
 /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
-body {
-    font-family: pokeFont;
-    padding: 50px;
-    background-image: radial-gradient(#c3e8fa, #52b7eb);
-    /* min-width: 800px; */
-}
 
-#gameLogo {
-    width: 70%;
-    max-width: 500px;
-}
-
-#map {
-    height: 500px;
+#exploreMap {
+    width: 100%;
+    height: 100%
 }
 
 
@@ -31,7 +21,7 @@ body {
     display: none;
 }
 
-#map #infowindow-content {
+#exploreMap #infowindow-content {
     display: inline;
 }
 

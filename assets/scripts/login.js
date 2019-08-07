@@ -13,6 +13,30 @@ $(document).ready(function () {
 
     var map, infoWindow, geocoder;
 
+    var isGameOver = false;
+    var gameSpeed = 1.5;
+
+    var userBattleObject = {
+        name: "",
+        nameDiv: "#userName",
+        healthID: "#userHealth",
+        divID: "#userPokemon",
+        health: 100,
+        damage: 90,
+        isFacing: false
+    }
+
+    var enemyBattleObject = {
+        name: "",
+        nameDiv: "#enemyName",
+        healthID: "#enemyHealth",
+        divID: "#enemyPokemon",
+        health: 100,
+        damage: 10,
+    }
+
+    var currEnemyMarker;
+
     ///////////////////////////////////////////////////////////
     // PERFORM ON PAGE LOAD
     ///////////////////////////////////////////////////////////
@@ -92,9 +116,9 @@ $(document).ready(function () {
 
     });
 
-    function shrinkLogo() {
+    function shrinkLogo(percent) {
         $("#gameLogo").animate({
-            "width": "50%"
+            "width": `${percent}%`
         });
     }
 
@@ -258,7 +282,6 @@ $(document).ready(function () {
             }
         };
 
-
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
@@ -336,199 +359,7 @@ $(document).ready(function () {
             streetViewControl: false,
             rotateControl: false,
             fullscreenControl: true,
-            styles: [{
-                "featureType": "administrative",
-                "elementType": "labels.text.stroke",
-                "stylers": [{
-                    "visibility": "on"
-                }, {
-                    "color": "#f1ffb8"
-                }, {
-                    "weight": "2.29"
-                }]
-            }, {
-                "featureType": "administrative.land_parcel",
-                "elementType": "all",
-                "stylers": [{
-                    "visibility": "on"
-                }]
-            }, {
-                "featureType": "landscape.man_made",
-                "elementType": "geometry.fill",
-                "stylers": [{
-                    "color": "#a1f199"
-                }]
-            }, {
-                "featureType": "landscape.man_made",
-                "elementType": "labels.text",
-                "stylers": [{
-                    "visibility": "on"
-                }, {
-                    "hue": "#ff0000"
-                }]
-            }, {
-                "featureType": "landscape.natural.landcover",
-                "elementType": "geometry.fill",
-                "stylers": [{
-                    "color": "#37bda2"
-                }]
-            }, {
-                "featureType": "landscape.natural.terrain",
-                "elementType": "geometry.fill",
-                "stylers": [{
-                    "color": "#37bda2"
-                }]
-            }, {
-                "featureType": "poi",
-                "elementType": "labels",
-                "stylers": [{
-                    "visibility": "on"
-                }, {
-                    "color": "#afa0a0"
-                }]
-            }, {
-                "featureType": "poi",
-                "elementType": "labels.text.stroke",
-                "stylers": [{
-                    "visibility": "on"
-                }, {
-                    "color": "#f1ffb8"
-                }]
-            }, {
-                "featureType": "poi.attraction",
-                "elementType": "geometry.fill",
-                "stylers": [{
-                    "visibility": "on"
-                }]
-            }, {
-                "featureType": "poi.business",
-                "elementType": "all",
-                "stylers": [{
-                    "visibility": "off"
-                }]
-            }, {
-                "featureType": "poi.business",
-                "elementType": "geometry.fill",
-                "stylers": [{
-                    "color": "#e4dfd9"
-                }]
-            }, {
-                "featureType": "poi.business",
-                "elementType": "labels.icon",
-                "stylers": [{
-                    "visibility": "off"
-                }]
-            }, {
-                "featureType": "poi.government",
-                "elementType": "all",
-                "stylers": [{
-                    "visibility": "off"
-                }]
-            }, {
-                "featureType": "poi.medical",
-                "elementType": "all",
-                "stylers": [{
-                    "visibility": "off"
-                }]
-            }, {
-                "featureType": "poi.park",
-                "elementType": "geometry.fill",
-                "stylers": [{
-                    "color": "#37bda2"
-                }]
-            }, {
-                "featureType": "poi.place_of_worship",
-                "elementType": "all",
-                "stylers": [{
-                    "visibility": "off"
-                }]
-            }, {
-                "featureType": "poi.school",
-                "elementType": "all",
-                "stylers": [{
-                    "visibility": "off"
-                }]
-            }, {
-                "featureType": "poi.sports_complex",
-                "elementType": "all",
-                "stylers": [{
-                    "visibility": "off"
-                }]
-            }, {
-                "featureType": "road",
-                "elementType": "geometry.fill",
-                "stylers": [{
-                    "color": "#84b09e"
-                }]
-            }, {
-                "featureType": "road",
-                "elementType": "geometry.stroke",
-                "stylers": [{
-                    "color": "#fafeb8"
-                }, {
-                    "weight": "1.25"
-                }, {
-                    "visibility": "on"
-                }]
-            }, {
-                "featureType": "road",
-                "elementType": "labels.text.stroke",
-                "stylers": [{
-                    "visibility": "on"
-                }, {
-                    "color": "#f1ffb8"
-                }]
-            }, {
-                "featureType": "road.highway",
-                "elementType": "labels.icon",
-                "stylers": [{
-                    "visibility": "off"
-                }]
-            }, {
-                "featureType": "road.arterial",
-                "elementType": "geometry.stroke",
-                "stylers": [{
-                    "visibility": "on"
-                }, {
-                    "color": "#f1ffb8"
-                }]
-            }, {
-                "featureType": "road.arterial",
-                "elementType": "labels.text.stroke",
-                "stylers": [{
-                    "visibility": "on"
-                }, {
-                    "color": "#f1ffb8"
-                }]
-            }, {
-                "featureType": "road.local",
-                "elementType": "geometry.stroke",
-                "stylers": [{
-                    "visibility": "on"
-                }, {
-                    "color": "#f1ffb8"
-                }, {
-                    "weight": "1.48"
-                }]
-            }, {
-                "featureType": "road.local",
-                "elementType": "labels",
-                "stylers": [{
-                    "visibility": "off"
-                }]
-            }, {
-                "featureType": "transit",
-                "elementType": "all",
-                "stylers": [{
-                    "visibility": "off"
-                }]
-            }, {
-                "featureType": "water",
-                "elementType": "geometry.fill",
-                "stylers": [{
-                    "color": "#5ddad6"
-                }]
-            }]
+            styles: mapStyles
 
         });
 
@@ -537,6 +368,31 @@ $(document).ready(function () {
         infoWindow = new google.maps.InfoWindow;
 
     }
+
+    // PUTS GIVEN POKEMON ON STAGE
+    function presentPokemon(pokemon) {
+        var pokemonElement;
+        var spriteType;
+        if (pokemon === enemyBattleObject) {
+            spriteType = 'front';
+        } else {
+            spriteType = 'back';
+        }
+
+        // Remove any existing sprite
+        $(pokemon.divID).remove();
+        pokemonElement = $(`<img id=${(pokemon.divID).split('#')[1]} class='justify-content-center w3-animate-opacity'>`);
+        $('#battleArena').append(pokemonElement.attr("src", getPokemonSprite(pokemon.name)[spriteType]));
+        $(pokemon.nameDiv).text(pokemon.name);
+
+    }
+
+    // UPDATE GAME MESSAGE
+    function updateMessage(msg) {
+        $("#gameMessage").empty();
+        $("#gameMessage").append($("<p>").html(msg));
+    }
+
 
     $(document).on("click", ".inventoryPokemon", function () {
         $("#viewPCstatsButton").show();
@@ -621,7 +477,7 @@ $(document).ready(function () {
 
     })
 
-    $("#viewPartyButton").click(function () {
+    $(".viewPartyButton").click(function () {
         //Load user party Pokemon
         currentUserRef.on("value", function (snapshot) {
             userParty = snapshot.val().pokemonParty;
@@ -630,17 +486,288 @@ $(document).ready(function () {
 
     })
 
+    $("#viewDashButton").click(function () {
+        showTrainerDash();
+    })
+
+    function getRandomSprite() {
+        var randomIndex = Math.floor(Math.random() * pokemonNamesList.length);
+        var randomPokemon = pokemonNamesList[randomIndex];
+        var randomPokemonFormatted = randomPokemon.toLowerCase();
+        return {
+            front: pokemonList[randomPokemonFormatted].spriteFront,
+            back: pokemonList[randomPokemonFormatted].spriteBack,
+            icon: pokemonList[randomPokemonFormatted].icon,
+            name: randomPokemon
+        }
 
 
+    };
+
+    function placeUserMarker(map) {
+        // Place user marker
+        var userMarker = new google.maps.Marker({
+            position: userLocation,
+            title: currentUser,
+            icon: getTrainerSprite(userTrainer).icon
+        });
+
+        // To add the marker to the map, call setMap();
+        userMarker.setMap(map);
+
+    }
+
+    function setNewUserLocation(coord) {
+
+        currentUserRef.update({
+            userLocation: coord
+        });
+
+        userLocation = coord;
+
+    }
+
+    function renderExploreMap(location) {
+        var map = new google.maps.Map(document.getElementById('exploreMap'), {
+            center: {
+                lat: userLocation.lat,
+                lng: userLocation.lng
+            },
+            zoom: 15,
+            mapTypeId: 'roadmap',
+            mapTypeControl: false,
+            zoomControl: true,
+            scaleControl: false,
+            streetViewControl: false,
+            rotateControl: false,
+            fullscreenControl: true,
+            styles: mapStyles
+            // gestureHandling: 'none',
+            // zoomControl: false
+        });
+
+        // Place user marker
+        placeUserMarker(map);
+
+        // Create the search box and link it to the UI element.
+        var input = document.getElementById('pac-input');
+        var searchBox = new google.maps.places.SearchBox(input);
+        var renderSpritesFlag = false;
+
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+        // Bias the SearchBox results towards current map's viewport.
+        map.addListener('bounds_changed', function () {
+            searchBox.setBounds(map.getBounds());
+
+
+
+            if (renderSpritesFlag === false) {
+                // set new user location 
+                var c = map.getCenter();
+                var center = {
+                    lat: c.lat(),
+                    lng: c.lng()
+                }
+                setNewUserLocation(center);
+                placeUserMarker(map)
+
+                var newBounds = map.getBounds();
+
+                for (var x = 0; x < 10; ++x) {
+                    var randCoord = GetRandCoords(newBounds.getSouthWest().lat(), newBounds.getNorthEast().lat(), newBounds.getSouthWest().lng(), newBounds.getNorthEast().lng());
+
+                    var randomPokemon = getRandomSprite()
+                    var icon = {
+                        url: randomPokemon.front
+                        // size: new google.maps.Size(71, 71),
+                        // origin: new google.maps.Point(0, 0),
+                        // anchor: new google.maps.Point(17, 34),
+                        // scaledSize: new google.maps.Size(75, 75)
+                    };
+
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        icon: icon,
+                        title: randomPokemon.name,
+                        position: new google.maps.LatLng(randCoord.latitude, randCoord.longitude)
+                    });
+
+                    marker.addListener("click", function () {
+                        // console.log(this);
+                        currEnemyMarker = this;
+                        renderBattle();
+                    })
+
+                }
+                renderSpritesFlag = true;
+
+            }
+        });
+
+        var markers = [];
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+
+        searchBox.addListener('places_changed', function () {
+            renderSpritesFlag = false;
+            var places = searchBox.getPlaces();
+
+            if (places.length == 0) {
+                return;
+            }
+
+            // Clear out the old markers.
+            markers.forEach(function (marker) {
+                marker.setMap(null);
+            });
+            markers = [];
+
+            // For each place, get the icon, name and location.
+            var bounds = new google.maps.LatLngBounds();
+
+            places.forEach(function (place) {
+                if (!place.geometry) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                }
+                var icon = {
+                    url: place.icon,
+                    // size: new google.maps.Size(71, 71),
+                    // origin: new google.maps.Point(0, 0),
+                    // anchor: new google.maps.Point(17, 34),
+                    // scaledSize: new google.maps.Size(25, 25)
+                };
+
+                // Create a marker for each place.
+                markers.push(new google.maps.Marker({
+                    map: map,
+                    icon: icon,
+                    title: place.name,
+                    position: place.geometry.location
+                }));
+
+                if (place.geometry.viewport) {
+                    // Only geocodes have viewport.
+                    bounds.union(place.geometry.viewport);
+                } else {
+                    bounds.extend(place.geometry.location);
+                }
+            });
+            map.fitBounds(bounds);
+        });
+    }
+
+    function getPartyPokemon(index) {
+        var key = Object.keys(userParty)[index];
+        if (key) {
+            return userParty[key];
+        }
+    }
+
+    // RETURN THE HTML TO BOLD A GIVEN MESSAGE
+    function bold(msg) {
+        return `<strong>${msg}</strong>`
+    }
+
+    // UPDATES HEALTH BAR VISUALS AND CHECKS USER/ENEMY FAINT STATUS
+    function updateHealth(pokemon, damageDealt) {
+        // Determines whether or not a new Pokemon needs to be shown on stage
+        var showNewPokemon = false;
+
+        // SHAKE CURRENT POKEMON
+        // shake(pokemon.divID);
+
+        pokemon.health = pokemon.health - damageDealt;
+        if (pokemon.health < 0) {
+            pokemon.health = 0;
+        }
+
+        if (pokemon.health > 0) {
+            $(pokemon.healthID).attr("aria-valuenow", pokemon.health);
+            $(pokemon.healthID).css("width", `${pokemon.health}%`);
+            updateColor(pokemon.health);
+
+        } else {
+            faint(pokemon);
+        }
+
+        function updateColor() {
+            if (pokemon.health <= 50 && pokemon.health > 20) {
+                $(pokemon.healthID).removeClass("bg-success");
+                $(pokemon.healthID).addClass("bg-warning");
+
+            } else if (pokemon.health <= 20 && pokemon.health > 0) {
+                $(pokemon.healthID).removeClass("bg-warning");
+                $(pokemon.healthID).addClass("bg-danger");
+                // playLoop(lowHealthSound);
+            }
+
+        }
+
+        function faint(pokemon) {
+            // PAUSE ALL PLAYING MUSIC
+            // pause(lowHealthSound);
+            // UPDATE HEALTH BAR AND PLAY SOUND
+            $(pokemon.healthID).attr("aria-valuenow", pokemon.health);
+            $(pokemon.healthID).css("width", `${pokemon.health}%`);
+            updateColor();
+            // faintSound.play();
+
+            $(pokemon.divID).fadeOut();
+            $(pokemon.divID).remove();
+
+            // UPDATE MESSAGE
+            if (pokemon === userBattleObject) {
+                updateMessage(`${bold(pokemon.name)} has fainted!`);
+                userDefeat()
+            } else {
+                updateMessage(`${bold(pokemon.name)} has fainted! ${bold(pokemon.name)} has been added to your PC.`);
+                userVictory();
+            }
+
+            showNewPokemon = true;
+
+        }
+
+        return showNewPokemon;
+
+    }
+
+    // DISPLAYS VICTORY MESSAGE IF ALL ENEMIES DEFEATED, OTHERWISE PROMPTS NEXT 
+    function userVictory() {
+        // pause(battleTheme);
+        // playLoop(victoryTheme);
+        setTimeout(function () {
+            isGameOver = true;
+            addNewPokemon('pc', currEnemyMarker.title);
+            currEnemyMarker.setMap(null);
+            $("#gameView").hide()
+            $("#exploreMapPage").fadeIn()
+        }, 2500 / gameSpeed);
+
+
+    }
+
+    // DISPLAYS LOSS MESSAGE AND PROMPT USER POKEMON SWITCH
+    function userDefeat() {
+        isGameOver = true;
+        updateMessage("You have been defeated!");
+        pause(battleTheme);
+        playLoop(defeatTheme);
+        promptRestart();
+
+    }
 
     ///////////////////////////////////////////////////////////
     // MAIN FUNCTIONS
     ///////////////////////////////////////////////////////////
 
     function showTrainerDash() {
-        shrinkLogo();
+        shrinkLogo(40);
         $("#gameMenu").hide();
         $("#pokemonSelection").hide();
+        $("#exploreMapPage").hide();
         $("#trainerDashboard").fadeIn();
 
         //Display user greeting
@@ -658,6 +785,69 @@ $(document).ready(function () {
         loadLastUserLocation("lastLocationPreview");
         showFormattedAddress(userLocation)
     }
+
+    function renderBattle() {
+        isGameOver = false;
+        // Render Enemy Pokemon Info
+
+        enemyBattleObject.name = currEnemyMarker.title;
+        presentPokemon(enemyBattleObject);
+
+        // Render User Pokemon info
+        userBattleObject.name = getPartyPokemon(0).species;
+        presentPokemon(userBattleObject);
+
+        updateMessage(`A wild ${bold(enemyBattleObject.name)} has appeared!\xa0\xa0What would you like to do?`)
+
+        $("#exploreMapPage").hide();
+        $("#gameView").fadeIn();
+    }
+
+    function enemyTurn() {
+        setTimeout(function () {
+            if (enemyBattleObject.health > 0) {
+                var attackMessage = `${bold(enemyBattleObject.name)} dealt ${enemyBattleObject.damage} damage!`;
+                updateMessage(attackMessage);
+                // hitSound.play();
+                updateHealth(userBattleObject, enemyBattleObject.damage);
+
+                if (!isGameOver) {
+                    setTimeout(function () {
+                        updateMessage("Choose your next move!");
+                        $("#attackButton").attr("disabled", false);
+
+
+                    }, 2500 / gameSpeed);
+                }
+            }
+        }, 2500 / gameSpeed)
+
+    }
+
+    // ATTACKS ENEMY IF ON STAGE
+    $('#attackButton').click(function () {
+        if (!isGameOver) {
+            // PLAY ATTACK SOUND AND SHOW MESSAGE
+            var attackMessage = `${bold(userBattleObject.name)} dealt ${userBattleObject.damage} damage!`;
+            updateMessage(attackMessage);
+            // UPDATE ENEMY HEALTH BAR (AND DETERMINE WHETHER 
+            // OR NOT A NEW POKEMON IS NOW ON THE STAGE)
+            var isNewPokemon = updateHealth(enemyBattleObject, userBattleObject.damage);
+            // DISABLE ATTACK BUTTON
+            (!isGameOver) ? $("#attackButton").attr("disabled", true): '';
+            // COMMENCE ENEMY TURN
+            (!isNewPokemon) ? enemyTurn(): '';
+        }
+
+    })
+
+    $("#fleeButton").click(function () {
+        updateMessage("You have fled!");
+        setTimeout(function () {
+            $("#gameView").hide();
+            $("#exploreMapPage").fadeIn();
+        }, 2500 / gameSpeed)
+    })
 
     // Checks if an account linked to the username exists
     $("#resumeGameButton").click(function () {
@@ -701,7 +891,7 @@ $(document).ready(function () {
 
             // Hide Menu and Show Pokemon Selection page
             $("#gameMenu").hide();
-            shrinkLogo();
+            shrinkLogo(40);
             $("#pokemonSelection").fadeIn();
         }
 
@@ -754,6 +944,15 @@ $(document).ready(function () {
 
 
     })
+
+    $("#startButton").click(function () {
+        renderExploreMap(userLocation);
+        shrinkLogo(30);
+        $("#trainerDashboard").hide();
+        $("#exploreMapPage").fadeIn()
+    })
+
+
 
 
 
