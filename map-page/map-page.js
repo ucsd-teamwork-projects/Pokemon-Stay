@@ -6,45 +6,57 @@ function initAutocomplete() {
         },
         zoom: 13,
         mapTypeId: 'roadmap',
-        gestureHandling: 'none',
-        zoomControl: false
+        //gestureHandling: 'none',
+        //zoomControl: false
     });
+
+
     // Create the search box and link it to the UI element.
     var input = document.getElementById('pac-input');
     var searchBox = new google.maps.places.SearchBox(input);
+    var renderSpritesFlag = false;
+
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
     // Bias the SearchBox results towards current map's viewport.
     map.addListener('bounds_changed', function () {
         searchBox.setBounds(map.getBounds());
+        
+        if(renderSpritesFlag === false){
+            var newBounds = map.getBounds();
+            console.log(newBounds.getNorthEast().lat())
 
-        var newBounds = map.getBounds();
-        console.log(newBounds.getNorthEast().lat())
-
-        for(var x = 0; x < 10; ++x){
-            var randCoord = GetRandCoords(newBounds.getSouthWest().lat(), newBounds.getNorthEast().lat(), newBounds.getSouthWest().lng(), newBounds.getNorthEast().lng());
-            console.log(randCoord)
+            for(var x = 0; x < 10; ++x){
+                var randCoord = GetRandCoords(newBounds.getSouthWest().lat(), newBounds.getNorthEast().lat(), newBounds.getSouthWest().lng(), newBounds.getNorthEast().lng());
+                console.log(randCoord)
 
 
-            var icon = {
-                url: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png",
-                size: new google.maps.Size(71, 71),
-                origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(17, 34),
-                scaledSize: new google.maps.Size(50, 50)
-            };
-            
-            var marker = new google.maps.Marker({
-                map: map,
-                icon: icon,
-                title: "test",
-                position: new google.maps.LatLng(randCoord.latitude, randCoord.longitude)
-            });
+                var icon = {
+                    url: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png",
+                    size: new google.maps.Size(71, 71),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(17, 34),
+                    scaledSize: new google.maps.Size(75, 75)
+                };
+                
+                var marker = new google.maps.Marker({
+                    map: map,
+                    icon: icon,
+                    title: "test",
+                    position: new google.maps.LatLng(randCoord.latitude, randCoord.longitude)
+                });
 
-            markers.push(marker);
+                marker.addListener("click", function(){
+                    console.log("marker test")
+                })
+                //markers.push(marker);
+                //marker.setMap(map);
+            }
+
+            renderSpritesFlag = true;
+
+            console.log(markers[0])
         }
-
-        console.log(markers[0])
     });
 
    
@@ -56,6 +68,7 @@ function initAutocomplete() {
     // more details for that place.
 
     searchBox.addListener('places_changed', function () {
+        renderSpritesFlag = false;
         var places = searchBox.getPlaces();
 
         if (places.length == 0) {
