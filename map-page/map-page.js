@@ -17,11 +17,44 @@ function initAutocomplete() {
     // Bias the SearchBox results towards current map's viewport.
     map.addListener('bounds_changed', function () {
         searchBox.setBounds(map.getBounds());
+
+        var newBounds = map.getBounds();
+        console.log(newBounds.getNorthEast().lat())
+
+        for(var x = 0; x < 10; ++x){
+            var randCoord = GetRandCoords(newBounds.getSouthWest().lat(), newBounds.getNorthEast().lat(), newBounds.getSouthWest().lng(), newBounds.getNorthEast().lng());
+            console.log(randCoord)
+
+
+            var icon = {
+                url: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png",
+                size: new google.maps.Size(71, 71),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(17, 34),
+                scaledSize: new google.maps.Size(50, 50)
+            };
+            
+            var marker = new google.maps.Marker({
+                map: map,
+                icon: icon,
+                title: "test",
+                position: new google.maps.LatLng(randCoord.latitude, randCoord.longitude)
+            });
+
+            markers.push(marker);
+        }
+
+        console.log(markers[0])
     });
 
+   
+
+
+    //var marker;
     var markers = [];
     // Listen for the event fired when the user selects a prediction and retrieve
     // more details for that place.
+
     searchBox.addListener('places_changed', function () {
         var places = searchBox.getPlaces();
 
@@ -59,20 +92,20 @@ function initAutocomplete() {
                 position: place.geometry.location
             }));
 
-            google.maps.event.addListener(map, "bounds_changed", function () {
-                var newBounds = map.getBounds();
-                console.log(newBounds.getNorthEast().lat())
+            // google.maps.event.addListener(map, "bounds_changed", function () {
+            //     var newBounds = map.getBounds();
+            //     console.log(newBounds.getNorthEast().lat())
 
-                var randCoord = GetRandCoords(newBounds.getSouthWest().lat(), newBounds.getNorthEast().lat(), newBounds.getSouthWest().lng(), newBounds.getNorthEast().lng());
-                console.log(randCoord)
+            //     var randCoord = GetRandCoords(newBounds.getSouthWest().lat(), newBounds.getNorthEast().lat(), newBounds.getSouthWest().lng(), newBounds.getNorthEast().lng());
+            //     console.log(randCoord)
 
-                markers.push(new google.maps.Marker({
-                    map: map,
-                    icon: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png",
-                    title: "test",
-                    position: new google.maps.LatLng(randCoord.latitude, randCoord.longitude)
-                }));
-            });
+            //     markers.push(new google.maps.Marker({
+            //         map: map,
+            //         icon: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png",
+            //         title: "test",
+            //         position: new google.maps.LatLng(randCoord.latitude, randCoord.longitude)
+            //     }));
+            // });
 
 
             if (place.geometry.viewport) {
