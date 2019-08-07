@@ -11,6 +11,7 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <!-- Main CSS Files -->
     <link rel="stylesheet" href='assets/styles/login.css'>
+    <link rel="stylesheet" href="map-page/map-page.css">
     <!-- Browser Icon -->
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/pokeball-logo.png" />
 
@@ -130,8 +131,9 @@
                             class="btn btn-warning mt-2" data-toggle="modal" data-target="#pokemonPC">
                             Pokemon PC&nbsp;<i class="fas fa-laptop"></i>
                         </button>
-                        <button title="View the pokemon traveling with you!" id="viewPartyButton" type="button"
-                            class="btn btn-info mt-2 ml-2" data-toggle="modal" data-target="#pokemonParty">
+                        <button title="View the pokemon traveling with you!" type="button"
+                            class="btn btn-info mt-2 ml-2 viewPartyButton" data-toggle="modal"
+                            data-target="#pokemonParty">
                             Pokemon Party&nbsp;<i class="fas fa-shield-alt"></i>
                         </button>
                         <button title="Start Exploring!" id="startButton" type="button"
@@ -144,7 +146,41 @@
 
 
 
-            </div> <!-- Battle Arena Screen -->
+            </div>
+            <!-- Explore Map Page -->
+            <div id="exploreMapPage" class="container justify-content-center">
+                <div class="mt-2 mb-3 row">
+                    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+
+                    <div
+                        class="col-xs-12 col-s-10 offset-s-1 col-md-8 offset-md-2 col-lg-6 offset-lg-3 justify-content-center exploreMapContainer">
+                        <div id="exploreMap">
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-12 mb-4 justify-content-center">
+
+                        <button title="Go to your Trainer Dashboard!" id="viewDashButton" type="button"
+                            class="btn btn-warning mt-2">
+                            Trainer Dashboard&nbsp;<i class="fas fa-laptop"></i>
+                        </button>
+                        <button title="View the pokemon traveling with you!" type="button"
+                            class="btn btn-info mt-2 ml-2 viewPartyButton" data-toggle="modal"
+                            data-target="#pokemonParty">
+                            Pokemon Party&nbsp;<i class="fas fa-shield-alt"></i>
+                        </button>
+
+                    </div>
+                </div>
+
+
+
+            </div>
+            <!-- Battle Arena Screen -->
             <div id="gameView" class="container justify-content-center">
                 <div id="battleArena" class="row justify-content-center">
                     <div id="enemyInfo">
@@ -165,8 +201,9 @@
                 </div>
                 <div id="gameMessage" class="row p-1"></div>
                 <div id="gameControls" class="row mt-2">
-                    <button id="attackButton" type="button" class="col-6 btn btn-danger">Attack</button>
-                    <button id="catchButton" type="button" class="col-6 btn btn-success">Catch</button>
+                    <button id="attackButton" type="button" class="col-12 btn btn-danger">Attack</button>
+                    <button id="switchButton" type="button" class="col-6 btn btn-info">Switch</button>
+                    <button id="fleeButton" type="button" class="col-6 btn btn-secondary">Flee</button>
 
                 </div>
                 <div id="enemiesDisplay" class="row mt-2"></div>
@@ -217,9 +254,9 @@
                             </button>
                         </div>
 
-                        <div id="pokemonPartyContent" class="modal-body container">
-                            <div class="mt-2 row">
-                                <div class="col-12 text-center" id="pokemonPartyView"></div>
+                        <div id="pokemonPartyContent" class="modal-body container justify-content-center">
+                            <div class="mt-2 row text-center" id="pokemonPartyView">
+                                <div class="col-12" id="pokemonPartyView"></div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -281,8 +318,9 @@
             </div>
         </div>
 
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCZmVVrzQvtHpLiBl5N7jWbKH0MlLRt2sM">
-        </script>
+        <script
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC_bvhfI_Sn97jbh6RcvCTWJA1IDSh6mPw&libraries=places"
+            async defer></script>
         <!-- jQuery UI -->
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
         <!-- jQuery UI CDN -->
@@ -302,7 +340,13 @@
         <!-- Moment JS Scripts -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
         <script src="assets/scripts/firebaseConfig.js"></script>
-        <script src="assets/scripts/login.js"></script>
+        <!-- Explore Map JS -->
+        <script src="map-page/rand-lat-long.js"></script>
+        <!-- Google Maps Styles -->
+        <script src="assets/scripts/googleMapStyles.js"></script>
+        <script src="assets/scripts/main.js"></script>
+
+
 
 
 
