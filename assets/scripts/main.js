@@ -22,7 +22,7 @@ $(document).ready(function () {
         healthID: "#userHealth",
         divID: "#userPokemon",
         health: 100,
-        damage: 90,
+        damage: '',
         isFacing: false
     }
 
@@ -32,7 +32,7 @@ $(document).ready(function () {
         healthID: "#enemyHealth",
         divID: "#enemyPokemon",
         health: 100,
-        damage: 10,
+        damage: '',
     }
 
     var currEnemyMarker;
@@ -44,46 +44,50 @@ $(document).ready(function () {
     // Load game info if not already loaded in local storage
     if (!localStorage.getItem("pokemonList") && !localStorage.getItem("pokemonNamesList")) {
         // LOAD ALL POKEMON INFO (NAMES, SPRITES, MOVES, TYPES)
-        var queryURL = `https://pokeapi.co/api/v2/pokemon?limit=964`;
+        var queryURL = `https://pokeapi.co/api/v2/pokemon-species?limit=649`;
         $.ajax({
             url: queryURL,
             method: "GET"
-        }).then(function (listOfPokemon) {
-            $.each(listOfPokemon.results, function (id, pokemon) {
-                var capitalizedName = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
-                pokemonNamesList.push(capitalizedName);
+        }).then(function (listOfPokemonSpecies) {
+            $.each(listOfPokemonSpecies.results, function (idx, pokemonSpecies) {
 
-                queryURL = pokemon.url;
+                queryURL = `https://pokeapi.co/api/v2/pokemon/${idx+1}`;
+
                 $.ajax({
-
                     url: queryURL,
                     method: "GET"
+
                 }).then(function (pokemonInfo) {
                     // Check if all pokemon have been loaded
-                    if (pokemonNamesList.length === 964) {
+                    if (pokemonNamesList.length === 648) {
                         localStorage.setItem("pokemonList", JSON.stringify(pokemonList));
                         localStorage.setItem("pokemonNamesList", JSON.stringify(pokemonNamesList));
                         $("#loading").hide();
                         $("#gameDisplay").fadeIn();
                     }
-                    // var types = [];
-                    // var moves = [];
 
-                    // $.each(pokemonInfo.types, function (id, typeInfo) {
-                    //     types.push(typeInfo.type.name)
-                    // })
+                    // If the sprites exist, add pokemon to the list
+                    if (pokemonInfo.sprites.front_default && pokemonInfo.sprites.back_default) {
+                        var capitalizedName = pokemonInfo.name.charAt(0).toUpperCase() + pokemonInfo.name.slice(1);
+                        pokemonNamesList.push(capitalizedName);
 
-                    // $.each(pokemonInfo.moves, function (id, moveInfo) {
-                    //     moves.push(moveInfo.move.name);
-                    // })
-                    pokemonList[pokemonInfo.name] = {
-                        spriteFront: pokemonInfo.sprites.front_default,
-                        spriteBack: pokemonInfo.sprites.back_default,
-                        icon: `https://img.pokemondb.net/sprites/sun-moon/icon/${pokemonInfo.name}.png`
-                        // types: types
-                        // moves: moves
+                        pokemonList[pokemonInfo.name] = {
+                            spriteFront: pokemonInfo.sprites.front_default,
+                            spriteBack: pokemonInfo.sprites.back_default,
+                            icon: `https://img.pokemondb.net/sprites/sun-moon/icon/${pokemonInfo.name}.png`,
+                            baseAttack: pokemonInfo.stats[4].base_stat,
+                            baseSpeed: pokemonInfo.stats[0].base_stat,
+                            baseHP: pokemonInfo.stats[5].base_stat,
+                            // pokedexEntry: pokemonSpeciesInfo.flavor_text_entries[2].flavor_text
+                            // pokedexNumber: pokemonSpeciesInfo.pokedex_numbers[4].entry_number
+                            // types: types
+                            // moves: moves
+                        }
                     }
                 });
+
+
+
             })
 
         })
@@ -791,6 +795,8 @@ $(document).ready(function () {
         // Render Enemy Pokemon Info
 
         enemyBattleObject.name = currEnemyMarker.title;
+        // enemyBattleObject.damage = pokemonList[enemyBattleObject.name].baseAttack;
+
         presentPokemon(enemyBattleObject);
 
         // Render User Pokemon info
