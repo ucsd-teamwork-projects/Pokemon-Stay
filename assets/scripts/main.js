@@ -18,6 +18,7 @@ $(document).ready(function () {
 
     var userBattleObject = {
         name: "",
+        species: "",
         nameDiv: "#userName",
         healthID: "#userHealth",
         divID: "#userPokemon",
@@ -390,9 +391,15 @@ $(document).ready(function () {
         $(pokemon.healthID).css("width", `${pokemon.health}%`);
 
         // Remove any existing sprite
+        $(pokemon.divID).fadeOut();
         $(pokemon.divID).remove();
         pokemonElement = $(`<img id=${(pokemon.divID).split('#')[1]} class='justify-content-center w3-animate-opacity'>`);
-        $('#battleArena').append(pokemonElement.attr("src", getPokemonSprite(pokemon.name)[spriteType]));
+        if (pokemon === userBattleObject) {
+            $('#battleArena').append(pokemonElement.attr("src", getPokemonSprite(pokemon.species)[spriteType]));
+        } else {
+            $('#battleArena').append(pokemonElement.attr("src", getPokemonSprite(pokemon.name)[spriteType]));
+
+        }
         $(pokemon.nameDiv).text(pokemon.name);
 
     }
@@ -491,8 +498,33 @@ $(document).ready(function () {
         //Load user party Pokemon
         currentUserRef.on("value", function (snapshot) {
             userParty = snapshot.val().pokemonParty;
-            loadUserParty("#pokemonPartyView", true, "partyPokemon");
         })
+
+        if ($(this).attr("id") == "switchButton") {
+            loadUserParty("#pokemonPartyView", true, "switchPartyPokemon");
+            // markActivePokemon();
+
+        } else {
+            loadUserParty("#pokemonPartyView", true, "partyPokemon");
+        }
+
+    })
+
+    $(document).on("click", ".switchPartyPokemon", function () {
+        var species = $(this).attr("data-species");
+        var name = $(this).attr("data-name");
+
+        $('#pokemonParty').modal('hide')
+        updateMessage(`You have chosen to send ${bold(name)} into battle!`);
+
+        setTimeout(function () {
+            userBattleObject.name = name;
+            userBattleObject.species = species;
+            userBattleObject.health = 100;
+            presentPokemon(userBattleObject);
+            enemyTurn();
+        })
+
 
     })
 
@@ -802,7 +834,8 @@ $(document).ready(function () {
         presentPokemon(enemyBattleObject);
 
         // Render User Pokemon info
-        userBattleObject.name = getPartyPokemon(0).species;
+        userBattleObject.species = getPartyPokemon(0).species;
+        userBattleObject.name = getPartyPokemon(0).name;
         userBattleObject.health = 100;
 
         presentPokemon(userBattleObject);

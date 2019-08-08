@@ -202,7 +202,8 @@
                 <div id="gameMessage" class="row p-1"></div>
                 <div id="gameControls" class="row mt-2">
                     <button id="attackButton" type="button" class="col-12 btn btn-danger">Attack</button>
-                    <button id="switchButton" type="button" class="col-6 btn btn-info">Switch</button>
+                    <button id="switchButton" type="button" class="col-6 btn btn-info viewPartyButton"
+                        data-toggle="modal" data-target="#pokemonParty">Switch</button>
                     <button id="fleeButton" type="button" class="col-6 btn btn-secondary">Flee</button>
 
                 </div>
@@ -317,34 +318,34 @@
 
             </div>
         </div>
+    </div>
 
-        <script
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC_bvhfI_Sn97jbh6RcvCTWJA1IDSh6mPw&libraries=places"
-            async defer></script>
-        <!-- jQuery UI -->
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-        <!-- jQuery UI CDN -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
-        </script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
-        </script>
-        <!-- Font Awesome Scripts -->
-        <script src="https://kit.fontawesome.com/325ada46a1.js"></script>
-        <!-- Firebase References -->
-        <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-database.js"></script>
-        <!-- Moment JS Scripts -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-        <script src="assets/scripts/firebaseConfig.js"></script>
-        <!-- Explore Map JS -->
-        <script src="map-page/rand-lat-long.js"></script>
-        <!-- Google Maps Styles -->
-        <script src="assets/scripts/googleMapStyles.js"></script>
-        <script src="assets/scripts/main.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC_bvhfI_Sn97jbh6RcvCTWJA1IDSh6mPw&libraries=places"
+        async defer></script>
+    <!-- jQuery UI -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <!-- jQuery UI CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <!-- Font Awesome Scripts -->
+    <script src="https://kit.fontawesome.com/325ada46a1.js"></script>
+    <!-- Firebase References -->
+    <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-database.js"></script>
+    <!-- Moment JS Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="assets/scripts/firebaseConfig.js"></script>
+    <!-- Explore Map JS -->
+    <script src="map-page/rand-lat-long.js"></script>
+    <!-- Google Maps Styles -->
+    <script src="assets/scripts/googleMapStyles.js"></script>
+    <script src="assets/scripts/main.js"></script>
 
 
 
