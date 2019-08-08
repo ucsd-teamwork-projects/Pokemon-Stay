@@ -22,7 +22,7 @@ $(document).ready(function () {
         healthID: "#userHealth",
         divID: "#userPokemon",
         health: 100,
-        damage: '',
+        damage: 25,
         isFacing: false
     }
 
@@ -32,7 +32,7 @@ $(document).ready(function () {
         healthID: "#enemyHealth",
         divID: "#enemyPokemon",
         health: 100,
-        damage: '',
+        damage: 10,
     }
 
     var currEnemyMarker;
@@ -71,18 +71,20 @@ $(document).ready(function () {
                         var capitalizedName = pokemonInfo.name.charAt(0).toUpperCase() + pokemonInfo.name.slice(1);
                         pokemonNamesList.push(capitalizedName);
 
-                        pokemonList[pokemonInfo.name] = {
-                            spriteFront: pokemonInfo.sprites.front_default,
-                            spriteBack: pokemonInfo.sprites.back_default,
-                            icon: `https://img.pokemondb.net/sprites/sun-moon/icon/${pokemonInfo.name}.png`,
-                            baseAttack: pokemonInfo.stats[4].base_stat,
-                            baseSpeed: pokemonInfo.stats[0].base_stat,
-                            baseHP: pokemonInfo.stats[5].base_stat,
-                            // pokedexEntry: pokemonSpeciesInfo.flavor_text_entries[2].flavor_text
-                            // pokedexNumber: pokemonSpeciesInfo.pokedex_numbers[4].entry_number
-                            // types: types
-                            // moves: moves
-                        }
+                        if (pokemonInfo.stats[4].base_stat)
+
+                            pokemonList[pokemonInfo.name] = {
+                                spriteFront: pokemonInfo.sprites.front_default,
+                                spriteBack: pokemonInfo.sprites.back_default,
+                                icon: `https://img.pokemondb.net/sprites/sun-moon/icon/${pokemonInfo.name}.png`
+                                // baseAttack: pokemonInfo.stats[4].base_stat,
+                                // baseSpeed: pokemonInfo.stats[0].base_stat,
+                                // baseHP: pokemonInfo.stats[5].base_stat,
+                                // pokedexEntry: pokemonSpeciesInfo.flavor_text_entries[2].flavor_text
+                                // pokedexNumber: pokemonSpeciesInfo.pokedex_numbers[4].entry_number
+                                // types: types
+                                // moves: moves
+                            }
                     }
                 });
 
@@ -383,6 +385,10 @@ $(document).ready(function () {
             spriteType = 'back';
         }
 
+        // Reset health bars
+        $(pokemon.healthID).attr("aria-valuenow", pokemon.health);
+        $(pokemon.healthID).css("width", `${pokemon.health}%`);
+
         // Remove any existing sprite
         $(pokemon.divID).remove();
         pokemonElement = $(`<img id=${(pokemon.divID).split('#')[1]} class='justify-content-center w3-animate-opacity'>`);
@@ -558,7 +564,7 @@ $(document).ready(function () {
         var searchBox = new google.maps.places.SearchBox(input);
         var renderSpritesFlag = false;
 
-        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);
 
         // Bias the SearchBox results towards current map's viewport.
         map.addListener('bounds_changed', function () {
@@ -676,8 +682,6 @@ $(document).ready(function () {
 
     // UPDATES HEALTH BAR VISUALS AND CHECKS USER/ENEMY FAINT STATUS
     function updateHealth(pokemon, damageDealt) {
-        // Determines whether or not a new Pokemon needs to be shown on stage
-        var showNewPokemon = false;
 
         // SHAKE CURRENT POKEMON
         // shake(pokemon.divID);
@@ -730,11 +734,8 @@ $(document).ready(function () {
                 userVictory();
             }
 
-            showNewPokemon = true;
-
         }
 
-        return showNewPokemon;
 
     }
 
@@ -757,9 +758,9 @@ $(document).ready(function () {
     function userDefeat() {
         isGameOver = true;
         updateMessage("You have been defeated!");
-        pause(battleTheme);
-        playLoop(defeatTheme);
-        promptRestart();
+        // pause(battleTheme);
+        // playLoop(defeatTheme);
+        // promptRestart();
 
     }
 
@@ -795,12 +796,15 @@ $(document).ready(function () {
         // Render Enemy Pokemon Info
 
         enemyBattleObject.name = currEnemyMarker.title;
+        enemyBattleObject.health = 100;
         // enemyBattleObject.damage = pokemonList[enemyBattleObject.name].baseAttack;
 
         presentPokemon(enemyBattleObject);
 
         // Render User Pokemon info
         userBattleObject.name = getPartyPokemon(0).species;
+        userBattleObject.health = 100;
+
         presentPokemon(userBattleObject);
 
         updateMessage(`A wild ${bold(enemyBattleObject.name)} has appeared!\xa0\xa0What would you like to do?`)
@@ -821,6 +825,9 @@ $(document).ready(function () {
                     setTimeout(function () {
                         updateMessage("Choose your next move!");
                         $("#attackButton").attr("disabled", false);
+                        $("#fleeButton").attr("disabled", false);
+                        $("#switchButton").attr("disabled", false);
+
 
 
                     }, 2500 / gameSpeed);
@@ -840,7 +847,11 @@ $(document).ready(function () {
             // OR NOT A NEW POKEMON IS NOW ON THE STAGE)
             var isNewPokemon = updateHealth(enemyBattleObject, userBattleObject.damage);
             // DISABLE ATTACK BUTTON
-            (!isGameOver) ? $("#attackButton").attr("disabled", true): '';
+            if (!isGameOver) {
+                $("#attackButton").attr("disabled", true);
+                $("#fleeButton").attr("disabled", true);
+                $("#switchButton").attr("disabled", true);
+            }
             // COMMENCE ENEMY TURN
             (!isNewPokemon) ? enemyTurn(): '';
         }
