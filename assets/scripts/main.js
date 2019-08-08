@@ -17,6 +17,7 @@ $(document).ready(function () {
     var gameSpeed = 1.5;
 
     var userBattleObject = {
+        id: "",
         name: "",
         species: "",
         nameDiv: "#userName",
@@ -387,8 +388,7 @@ $(document).ready(function () {
         }
 
         // Reset health bars
-        $(pokemon.healthID).attr("aria-valuenow", pokemon.health);
-        $(pokemon.healthID).css("width", `${pokemon.health}%`);
+        updateHealth(pokemon, 0);
 
         // Remove any existing sprite
         $(pokemon.divID).fadeOut();
@@ -502,7 +502,7 @@ $(document).ready(function () {
 
         if ($(this).attr("id") == "switchButton") {
             loadUserParty("#pokemonPartyView", true, "switchPartyPokemon");
-            // markActivePokemon();
+            markActivePokemon();
 
         } else {
             loadUserParty("#pokemonPartyView", true, "partyPokemon");
@@ -511,22 +511,26 @@ $(document).ready(function () {
     })
 
     $(document).on("click", ".switchPartyPokemon", function () {
-        var species = $(this).attr("data-species");
-        var name = $(this).attr("data-name");
+        // If the pokemon selected isn't the current pokemon in battle
+        if ($(this).attr("data-id") !== userBattleObject.id) {
+            var species = $(this).attr("data-species");
+            var name = $(this).attr("data-name");
+            var id = $(this).attr("data-id");
 
-        $('#pokemonParty').modal('hide')
-        updateMessage(`You have chosen to send ${bold(name)} into battle!`);
+            $('#pokemonParty').modal('hide')
+            updateMessage(`You have chosen to send ${bold(name)} into battle!`);
 
-        setTimeout(function () {
-            userBattleObject.name = name;
-            userBattleObject.species = species;
-            userBattleObject.health = 100;
-            presentPokemon(userBattleObject);
-            enemyTurn();
-        })
-
-
+            setTimeout(function () {
+                userBattleObject.id = id;
+                userBattleObject.name = name;
+                userBattleObject.species = species;
+                userBattleObject.health = 100;
+                presentPokemon(userBattleObject);
+                enemyTurn();
+            })
+        }
     })
+
 
     $("#viewDashButton").click(function () {
         showTrainerDash();
@@ -733,7 +737,11 @@ $(document).ready(function () {
         }
 
         function updateColor() {
-            if (pokemon.health <= 50 && pokemon.health > 20) {
+            if (pokemon.health > 50) {
+                $(pokemon.healthID).removeClass("bg-warning");
+                $(pokemon.healthID).removeClass("bg-danger");
+                $(pokemon.healthID).addClass("bg-success");
+            } else if (pokemon.health <= 50 && pokemon.health > 20) {
                 $(pokemon.healthID).removeClass("bg-success");
                 $(pokemon.healthID).addClass("bg-warning");
 
@@ -796,6 +804,10 @@ $(document).ready(function () {
 
     }
 
+    function markActivePokemon() {
+        $(`.switchPartyPokemon[data-id=${userBattleObject.id}]`).addClass("selectedPartyPokemon")
+    }
+
     ///////////////////////////////////////////////////////////
     // MAIN FUNCTIONS
     ///////////////////////////////////////////////////////////
@@ -836,7 +848,11 @@ $(document).ready(function () {
         // Render User Pokemon info
         userBattleObject.species = getPartyPokemon(0).species;
         userBattleObject.name = getPartyPokemon(0).name;
+        userBattleObject.id = getPartyPokemon(0).ID;
+
         userBattleObject.health = 100;
+
+
 
         presentPokemon(userBattleObject);
 
