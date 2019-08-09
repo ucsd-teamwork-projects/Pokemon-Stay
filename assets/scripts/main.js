@@ -680,7 +680,11 @@ $(document).ready(function () {
 
                     marker.addListener("click", function () {
                         currEnemyMarker = this;
-                        renderBattle();
+                        if (userParty) {
+                            renderBattle();
+                        } else {
+                            alert("Please have at least one Pokemon in your party!");
+                        }
                     })
 
                 }
