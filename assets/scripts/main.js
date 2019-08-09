@@ -14,6 +14,7 @@ $(document).ready(function () {
     var map, infoWindow, geocoder;
 
     var isGameOver = false;
+    var mapInitiated = false;
     var gameSpeed = 1.5;
 
     var userBattleObject = {
@@ -638,8 +639,6 @@ $(document).ready(function () {
         map.addListener('bounds_changed', function () {
             searchBox.setBounds(map.getBounds());
 
-
-
             if (renderSpritesFlag === false) {
                 // set new user location 
                 var c = map.getCenter();
@@ -672,7 +671,6 @@ $(document).ready(function () {
                     });
 
                     marker.addListener("click", function () {
-                        // console.log(this);
                         currEnemyMarker = this;
                         renderBattle();
                     })
@@ -1064,11 +1062,18 @@ $(document).ready(function () {
     })
 
     $("#startButton").click(function () {
-        clickSound.play();
-        renderExploreMap(userLocation);
-        shrinkLogo(30);
-        $("#trainerDashboard").hide();
-        $("#exploreMapPage").fadeIn()
+        if (!mapInitiated) {
+            clickSound.play();
+            renderExploreMap(userLocation);
+            shrinkLogo(30);
+            $("#trainerDashboard").hide();
+            $("#exploreMapPage").fadeIn();
+            mapInitiated = true;
+        } else {
+            shrinkLogo(30);
+            $("#trainerDashboard").hide();
+            $("#exploreMapPage").fadeIn();
+        }
     })
 
 })
