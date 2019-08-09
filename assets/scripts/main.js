@@ -39,6 +39,18 @@ $(document).ready(function () {
 
     var currEnemyMarker;
 
+    //MUSIC & SOUNDS
+    var mainTheme = new Audio('./assets/sounds/opening.mp3');
+    var battleTheme = new Audio('./assets/sounds/battle.mp3');
+    var victoryTheme = new Audio('./assets/sounds/victory.mp3');
+    var defeatTheme = new Audio('./assets/sounds/defeat.mp3')
+    var clickSound = new Audio('./assets/sounds/click.mp3');
+    var faintSound = new Audio('./assets/sounds/faint.mp3');
+    var hitSound = new Audio('./assets/sounds/hit.mp3');
+    var lowHealthSound = new Audio('./assets/sounds/lowHealth.mp3');
+    var levelUpSound = new Audio('./assets/sounds/levelUp.mp3');
+
+
     ///////////////////////////////////////////////////////////
     // PERFORM ON PAGE LOAD
     ///////////////////////////////////////////////////////////
@@ -73,20 +85,20 @@ $(document).ready(function () {
                         var capitalizedName = pokemonInfo.name.charAt(0).toUpperCase() + pokemonInfo.name.slice(1);
                         pokemonNamesList.push(capitalizedName);
 
-                        if (pokemonInfo.stats[4].base_stat)
+                        // if (pokemonInfo.stats[4].base_stat)
 
-                            pokemonList[pokemonInfo.name] = {
-                                spriteFront: pokemonInfo.sprites.front_default,
-                                spriteBack: pokemonInfo.sprites.back_default,
-                                icon: `https://img.pokemondb.net/sprites/sun-moon/icon/${pokemonInfo.name}.png`
-                                // baseAttack: pokemonInfo.stats[4].base_stat,
-                                // baseSpeed: pokemonInfo.stats[0].base_stat,
-                                // baseHP: pokemonInfo.stats[5].base_stat,
-                                // pokedexEntry: pokemonSpeciesInfo.flavor_text_entries[2].flavor_text
-                                // pokedexNumber: pokemonSpeciesInfo.pokedex_numbers[4].entry_number
-                                // types: types
-                                // moves: moves
-                            }
+                        pokemonList[pokemonInfo.name] = {
+                            spriteFront: pokemonInfo.sprites.front_default,
+                            spriteBack: pokemonInfo.sprites.back_default,
+                            icon: `https://img.pokemondb.net/sprites/sun-moon/icon/${pokemonInfo.name}.png`
+                            // baseAttack: pokemonInfo.stats[4].base_stat,
+                            // baseSpeed: pokemonInfo.stats[0].base_stat,
+                            // baseHP: pokemonInfo.stats[5].base_stat,
+                            // pokedexEntry: pokemonSpeciesInfo.flavor_text_entries[2].flavor_text
+                            // pokedexNumber: pokemonSpeciesInfo.pokedex_numbers[4].entry_number
+                            // types: types
+                            // moves: moves
+                        }
                     }
                 });
 
@@ -114,6 +126,22 @@ $(document).ready(function () {
     ///////////////////////////////////////////////////////////
     // HELPER FUNCTIONS
     ///////////////////////////////////////////////////////////
+
+    function playLoop(sound) {
+        // LOWER VOLUME FOR BACKGROUND MUSIC
+        if (sound === lowHealthSound) {
+            sound.volume = 0.1;
+        } else {
+            sound.volume = 0.05;
+        }
+        sound.loop = true;
+        sound.play();
+    }
+
+    function pause(sound) {
+        sound.loop = false;
+        sound.pause();
+    }
 
     // FUNCTION TO AUTOCOMPLETE STARTER POKEMON CHOOSER
     $(function () {
@@ -856,10 +884,25 @@ $(document).ready(function () {
 
         presentPokemon(userBattleObject);
 
-        updateMessage(`A wild ${bold(enemyBattleObject.name)} has appeared!\xa0\xa0What would you like to do?`)
+        updateMessage(`A wild ${bold(enemyBattleObject.name)} has appeared!\xa0\xa0What would you like to do?`);
+        enableButtons();
 
         $("#exploreMapPage").hide();
         $("#gameView").fadeIn();
+    }
+
+
+    function disableButtons() {
+        $("#attackButton").attr("disabled", true);
+        $("#fleeButton").attr("disabled", true);
+        $("#switchButton").attr("disabled", true);
+
+    }
+
+    function enableButtons() {
+        $("#attackButton").attr("disabled", false);
+        $("#fleeButton").attr("disabled", false);
+        $("#switchButton").attr("disabled", false);
     }
 
     function enemyTurn() {
@@ -873,9 +916,7 @@ $(document).ready(function () {
                 if (!isGameOver) {
                     setTimeout(function () {
                         updateMessage("Choose your next move!");
-                        $("#attackButton").attr("disabled", false);
-                        $("#fleeButton").attr("disabled", false);
-                        $("#switchButton").attr("disabled", false);
+                        enableButtons();
 
 
 
@@ -897,9 +938,7 @@ $(document).ready(function () {
             var isNewPokemon = updateHealth(enemyBattleObject, userBattleObject.damage);
             // DISABLE ATTACK BUTTON
             if (!isGameOver) {
-                $("#attackButton").attr("disabled", true);
-                $("#fleeButton").attr("disabled", true);
-                $("#switchButton").attr("disabled", true);
+                disableButtons();
             }
             // COMMENCE ENEMY TURN
             (!isNewPokemon) ? enemyTurn(): '';
@@ -1017,9 +1056,5 @@ $(document).ready(function () {
         $("#trainerDashboard").hide();
         $("#exploreMapPage").fadeIn()
     })
-
-
-
-
 
 })
