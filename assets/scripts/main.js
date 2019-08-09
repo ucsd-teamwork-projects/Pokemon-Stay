@@ -48,12 +48,15 @@ $(document).ready(function () {
     var faintSound = new Audio('./assets/sounds/faint.mp3');
     var hitSound = new Audio('./assets/sounds/hit.mp3');
     var lowHealthSound = new Audio('./assets/sounds/lowHealth.mp3');
-    var levelUpSound = new Audio('./assets/sounds/levelUp.mp3');
+    // var levelUpSound = new Audio('./assets/sounds/levelUp.mp3');
 
 
     ///////////////////////////////////////////////////////////
     // PERFORM ON PAGE LOAD
     ///////////////////////////////////////////////////////////
+
+    // PLAY OPENING MUSIC
+    playLoop(mainTheme);
 
     // Load game info if not already loaded in local storage
     if (!localStorage.getItem("pokemonList") && !localStorage.getItem("pokemonNamesList")) {
@@ -440,6 +443,7 @@ $(document).ready(function () {
 
 
     $(document).on("click", ".inventoryPokemon", function () {
+        clickSound.play();
         $("#viewPCstatsButton").show();
         $("#addToPartyButton").show();
         $(".inventoryPokemon").removeClass("selectedInventoryPokemon");
@@ -448,6 +452,7 @@ $(document).ready(function () {
     })
 
     $(document).on("click", ".partyPokemon", function () {
+        clickSound.play();
         $("#viewPartyStatsButton").show();
         $("#addToPCbutton").show();
         $(".partyPokemon").removeClass("selectedPartyPokemon");
@@ -456,20 +461,21 @@ $(document).ready(function () {
     })
 
     $("#viewPCstatsButton").click(function () {
+        clickSound.play();
         var selectedPokemon = $(".selectedInventoryPokemon");
-
         loadPokemonInfoModal('pc', selectedPokemon);
 
     })
 
     $("#viewPartyStatsButton").click(function () {
+        clickSound.play();
         var selectedPokemon = $(".selectedPartyPokemon");
-
         loadPokemonInfoModal('party', selectedPokemon);
 
     })
 
     $("#addToPartyButton").click(function () {
+        clickSound.play();
         loadUserParty("#pokemonPartyPCpreview", false, "partyPCpokemon");
         $("#pokemonPartyPCpreview").show();
         movePokemon('pc', $(".selectedInventoryPokemon").attr("data-id"));
@@ -481,18 +487,11 @@ $(document).ready(function () {
     })
 
     $("#addToPCbutton").click(function () {
+        clickSound.play();
         // Add confirmation modal
         movePokemon('party', $(".selectedPartyPokemon").attr("data-id"));
         $("#viewPartyStatsButton").hide();
         $("#addToPCbutton").hide();
-    })
-
-    $(".partyPCpokemon").click(function () {
-
-    })
-
-    $(".partyPokemon").click(function () {
-
     })
 
     $('#pokemonPC').on('hidden.bs.modal', function () {
@@ -508,12 +507,14 @@ $(document).ready(function () {
     });
 
     $(".trainer").click(function () {
+        clickSound.play();
         $(".trainer").attr("id", "");
         $(this).attr("id", "selectedTrainer");
 
     })
 
     $("#viewPCbutton").click(function () {
+        clickSound.play();
         //Load user caught Pokemon
         currentUserRef.on("value", function (snapshot) {
             userInventory = snapshot.val().pokemonPC;
@@ -523,6 +524,7 @@ $(document).ready(function () {
     })
 
     $(".viewPartyButton").click(function () {
+        clickSound.play();
         //Load user party Pokemon
         currentUserRef.on("value", function (snapshot) {
             userParty = snapshot.val().pokemonParty;
@@ -539,6 +541,7 @@ $(document).ready(function () {
     })
 
     $(document).on("click", ".switchPartyPokemon", function () {
+        clickSound.play();
         // If the pokemon selected isn't the current pokemon in battle
         if ($(this).attr("data-id") !== userBattleObject.id) {
             var species = $(this).attr("data-species");
@@ -561,6 +564,7 @@ $(document).ready(function () {
 
 
     $("#viewDashButton").click(function () {
+        clickSound.play();
         showTrainerDash();
     })
 
@@ -776,19 +780,19 @@ $(document).ready(function () {
             } else if (pokemon.health <= 20 && pokemon.health > 0) {
                 $(pokemon.healthID).removeClass("bg-warning");
                 $(pokemon.healthID).addClass("bg-danger");
-                // playLoop(lowHealthSound);
+                playLoop(lowHealthSound);
             }
 
         }
 
         function faint(pokemon) {
             // PAUSE ALL PLAYING MUSIC
-            // pause(lowHealthSound);
+            pause(lowHealthSound);
             // UPDATE HEALTH BAR AND PLAY SOUND
             $(pokemon.healthID).attr("aria-valuenow", pokemon.health);
             $(pokemon.healthID).css("width", `${pokemon.health}%`);
             updateColor();
-            // faintSound.play();
+            faintSound.play();
 
             $(pokemon.divID).fadeOut();
             $(pokemon.divID).remove();
@@ -809,14 +813,15 @@ $(document).ready(function () {
 
     // DISPLAYS VICTORY MESSAGE IF ALL ENEMIES DEFEATED, OTHERWISE PROMPTS NEXT 
     function userVictory() {
-        // pause(battleTheme);
-        // playLoop(victoryTheme);
+        pause(battleTheme);
+        playLoop(victoryTheme);
         setTimeout(function () {
             isGameOver = true;
             addNewPokemon('pc', currEnemyMarker.title);
             currEnemyMarker.setMap(null);
             $("#gameView").hide()
             $("#exploreMapPage").fadeIn()
+            pauseLoop(victoryTheme);
         }, 2500 / gameSpeed);
 
 
@@ -826,9 +831,9 @@ $(document).ready(function () {
     function userDefeat() {
         isGameOver = true;
         updateMessage("You have been defeated!");
-        // pause(battleTheme);
-        // playLoop(defeatTheme);
-        // promptRestart();
+        pause(battleTheme);
+        playLoop(defeatTheme);
+        // promptSwitch();
 
     }
 
@@ -864,7 +869,11 @@ $(document).ready(function () {
     }
 
     function renderBattle() {
+        // PAUSE THEME MUSIC AND PLAY BATTLE THEME
+        pause(mainTheme);
+        playLoop(battleTheme);
         isGameOver = false;
+
         // Render Enemy Pokemon Info
 
         enemyBattleObject.name = currEnemyMarker.title;
@@ -910,7 +919,7 @@ $(document).ready(function () {
             if (enemyBattleObject.health > 0) {
                 var attackMessage = `${bold(enemyBattleObject.name)} dealt ${enemyBattleObject.damage} damage!`;
                 updateMessage(attackMessage);
-                // hitSound.play();
+                hitSound.play();
                 updateHealth(userBattleObject, enemyBattleObject.damage);
 
                 if (!isGameOver) {
@@ -933,6 +942,7 @@ $(document).ready(function () {
             // PLAY ATTACK SOUND AND SHOW MESSAGE
             var attackMessage = `${bold(userBattleObject.name)} dealt ${userBattleObject.damage} damage!`;
             updateMessage(attackMessage);
+            hitSound.play();
             // UPDATE ENEMY HEALTH BAR (AND DETERMINE WHETHER 
             // OR NOT A NEW POKEMON IS NOW ON THE STAGE)
             var isNewPokemon = updateHealth(enemyBattleObject, userBattleObject.damage);
@@ -956,6 +966,7 @@ $(document).ready(function () {
 
     // Checks if an account linked to the username exists
     $("#resumeGameButton").click(function () {
+        clickSound.play();
         var username = $("#username-input").val().trim();
 
         if (username === '') {
@@ -976,6 +987,7 @@ $(document).ready(function () {
     })
 
     $("#newGameButton").click(function () {
+        clickSound.play();
         var restartGame = true;
         var newUsername = $("#username-input").val().trim();
 
@@ -1003,7 +1015,7 @@ $(document).ready(function () {
     })
 
     $("#selectStarterButton").click(function () {
-
+        clickSound.play();
         var speciesName = $("#pokemonSelector").val();
 
         //  If pokemon does not exist...
@@ -1019,6 +1031,7 @@ $(document).ready(function () {
     })
 
     $("#initializeUserButton").click(function () {
+        clickSound.play();
         var speciesName = $("#pokemonSelector").val();
         //  If pokemon does not exist...
         if (isPokemon(speciesName)) {
@@ -1051,6 +1064,7 @@ $(document).ready(function () {
     })
 
     $("#startButton").click(function () {
+        clickSound.play();
         renderExploreMap(userLocation);
         shrinkLogo(30);
         $("#trainerDashboard").hide();
