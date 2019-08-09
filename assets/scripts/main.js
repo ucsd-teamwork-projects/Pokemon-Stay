@@ -164,6 +164,8 @@ $(document).ready(function () {
 
     function loadUserParty(location, wrapSprites, classes) {
         $(location).empty();
+        getUserInfo();
+
         // The number of columns each sprite should occupy
         var columns = '2';
 
@@ -187,6 +189,7 @@ $(document).ready(function () {
     }
 
     function loadUserInventory(location) {
+        getUserInfo();
         $(location).empty();
 
         if (!userInventory) {
@@ -477,10 +480,11 @@ $(document).ready(function () {
 
     $("#addToPartyButton").click(function () {
         clickSound.play();
-        loadUserParty("#pokemonPartyPCpreview", false, "partyPCpokemon");
-        $("#pokemonPartyPCpreview").show();
         movePokemon('pc', $(".selectedInventoryPokemon").attr("data-id"));
-        loadUserParty("#pokemonPartyPCpreview", false, "partyPCpokemon");
+        loadUserParty("#pokemonPartyPCpreview", true, "partyPCPokemon");
+        loadUserInventory("#pokemonPCview", true, "partyPCPokemon");
+
+        $("#pokemonPartyPCpreview").show();
         $("#viewPCstatsButton").hide();
         $("#addToPartyButton").hide();
 
@@ -491,6 +495,7 @@ $(document).ready(function () {
         clickSound.play();
         // Add confirmation modal
         movePokemon('party', $(".selectedPartyPokemon").attr("data-id"));
+        loadUserParty("#pokemonPartyView", true, "partyPokemon");
         $("#viewPartyStatsButton").hide();
         $("#addToPCbutton").hide();
     })
@@ -517,19 +522,22 @@ $(document).ready(function () {
     $("#viewPCbutton").click(function () {
         clickSound.play();
         //Load user caught Pokemon
-        currentUserRef.on("value", function (snapshot) {
-            userInventory = snapshot.val().pokemonPC;
-            loadUserInventory("#pokemonPCview");
-        })
+        getUserInfo();
+        loadUserInventory("#pokemonPCview");
+
 
     })
 
-    $(".viewPartyButton").click(function () {
-        clickSound.play();
-        //Load user party Pokemon
+    function getUserInfo() {
+        //Load user Pokemon
         currentUserRef.on("value", function (snapshot) {
             userParty = snapshot.val().pokemonParty;
+            userInventory = snapshot.val().pokemonPC;
         })
+    }
+
+    $(".viewPartyButton").click(function () {
+        clickSound.play();
 
         if ($(this).attr("id") == "switchButton") {
             loadUserParty("#pokemonPartyView", true, "switchPartyPokemon");
@@ -819,7 +827,7 @@ $(document).ready(function () {
             currEnemyMarker.setMap(null);
             $("#gameView").hide()
             $("#exploreMapPage").fadeIn()
-            pauseLoop(victoryTheme);
+            pause(victoryTheme);
         }, 2500 / gameSpeed);
 
 
