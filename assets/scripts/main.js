@@ -827,7 +827,7 @@ $(document).ready(function () {
             currEnemyMarker.setMap(null);
             $("#gameView").hide()
             $("#exploreMapPage").fadeIn()
-            pauseLoop(victoryTheme);
+            pause(victoryTheme);
         }, 2500 / gameSpeed);
 
 
