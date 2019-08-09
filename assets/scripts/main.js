@@ -328,7 +328,7 @@ $(document).ready(function () {
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
-                console.log(position);
+                // console.log(position);
                 var pos = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
@@ -716,7 +716,7 @@ $(document).ready(function () {
 
             places.forEach(function (place) {
                 if (!place.geometry) {
-                    console.log("Returned place contains no geometry");
+                    // console.log("Returned place contains no geometry");
                     return;
                 }
                 var icon = {
@@ -832,6 +832,7 @@ $(document).ready(function () {
             $("#gameView").hide()
             $("#exploreMapPage").fadeIn()
             pause(victoryTheme);
+            playLoop(mainTheme);
         }, 2500 / gameSpeed);
 
 
@@ -968,9 +969,12 @@ $(document).ready(function () {
 
     $("#fleeButton").click(function () {
         updateMessage("You have fled!");
+        pause(battleTheme);
         setTimeout(function () {
             $("#gameView").hide();
             $("#exploreMapPage").fadeIn();
+            playLoop(mainTheme);
+
         }, 2500 / gameSpeed)
     })
 
