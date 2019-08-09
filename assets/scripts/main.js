@@ -49,6 +49,10 @@ $(document).ready(function () {
     var faintSound = new Audio('./assets/sounds/faint.mp3');
     var hitSound = new Audio('./assets/sounds/hit.mp3');
     var lowHealthSound = new Audio('./assets/sounds/lowHealth.mp3');
+    var fleeSound = new Audio('./assets/sounds/flee.wav');
+    var logOn = new Audio('./assets/sounds/logOn.mp3');
+    var logOff = new Audio('./assets/sounds/logOff.mp3');
+
     // var levelUpSound = new Audio('./assets/sounds/levelUp.mp3');
 
 
@@ -58,6 +62,10 @@ $(document).ready(function () {
 
     // PLAY OPENING MUSIC
     playLoop(mainTheme);
+    bootbox.setDefaults({
+        centerVertical: true
+
+    });
 
     // Load game info if not already loaded in local storage
     if (!localStorage.getItem("pokemonList") && !localStorage.getItem("pokemonNamesList")) {
@@ -158,7 +166,7 @@ $(document).ready(function () {
 
     function shrinkLogo(percent) {
         $("#gameLogo").animate({
-            "width": `${percent}%`
+            "width": `${percent}%\vw`
         });
     }
 
@@ -231,9 +239,8 @@ $(document).ready(function () {
         return request;
     }
 
-    function addNewPokemon(destination, species, previewDiv) {
-        var name = species;
-        name = prompt("What would you like to name this Pokemon? ('.' and '/' are not allowed)", species);
+    function addNewPokemon(name, destination, species, previewDiv) {
+
         var destinationRef;
 
         if (destination === 'party') {
@@ -255,7 +262,6 @@ $(document).ready(function () {
         if (previewDiv !== '') {
             $(previewDiv).html(`<img src=${getPokemonSprite(species).front}>`);
         }
-
     }
 
     function movePokemon(origin, id) {
@@ -461,7 +467,6 @@ $(document).ready(function () {
         $("#addToPCbutton").show();
         $(".partyPokemon").removeClass("selectedPartyPokemon");
         $(this).addClass("selectedPartyPokemon");
-        // loadPokemonInfoModal('party', $(this));
     })
 
     $("#viewPCstatsButton").click(function () {
@@ -480,13 +485,19 @@ $(document).ready(function () {
 
     $("#addToPartyButton").click(function () {
         clickSound.play();
-        movePokemon('pc', $(".selectedInventoryPokemon").attr("data-id"));
-        loadUserParty("#pokemonPartyPCpreview", true, "partyPCPokemon");
-        loadUserInventory("#pokemonPCview", true, "partyPCPokemon");
+        if (Object.keys(userParty).length === 6) {
+            $("#pc-error").text("Your party is full!");
 
-        $("#pokemonPartyPCpreview").show();
-        $("#viewPCstatsButton").hide();
-        $("#addToPartyButton").hide();
+        } else {
+            $("#pc-error").text("");
+            movePokemon('pc', $(".selectedInventoryPokemon").attr("data-id"));
+            loadUserParty("#pokemonPartyPCpreview", true, "partyPCPokemon");
+            loadUserInventory("#pokemonPCview", true, "partyPCPokemon");
+
+            $("#pokemonPartyPCpreview").show();
+            $("#viewPCstatsButton").hide();
+            $("#addToPartyButton").hide();
+        }
 
 
     })
@@ -501,6 +512,7 @@ $(document).ready(function () {
     })
 
     $('#pokemonPC').on('hidden.bs.modal', function () {
+        logOff.play();
         $("#viewPCstatsButton").hide();
         $("#addToPartyButton").hide();
         $("#pokemonPartyPCpreview").hide();
@@ -520,12 +532,9 @@ $(document).ready(function () {
     })
 
     $("#viewPCbutton").click(function () {
-        clickSound.play();
+        logOn.play();
         //Load user caught Pokemon
-        getUserInfo();
         loadUserInventory("#pokemonPCview");
-
-
     })
 
     function getUserInfo() {
@@ -683,7 +692,7 @@ $(document).ready(function () {
                         if (userParty) {
                             renderBattle();
                         } else {
-                            alert("Please have at least one Pokemon in your party!");
+                            bootbox.alert("Please have at least one Pokemon in your party!");
                         }
                     })
 
@@ -826,13 +835,24 @@ $(document).ready(function () {
         pause(battleTheme);
         playLoop(victoryTheme);
         setTimeout(function () {
-            isGameOver = true;
-            addNewPokemon('pc', currEnemyMarker.title);
-            currEnemyMarker.setMap(null);
-            $("#gameView").hide()
-            $("#exploreMapPage").fadeIn()
-            pause(victoryTheme);
-            playLoop(mainTheme);
+            bootbox.prompt({
+                title: "What would you like to name this Pokemon? ('.' and '/' are not allowed)",
+                value: currEnemyMarker.title,
+                closeButton: false,
+                required: true,
+                centerVertical: true,
+                callback: function (name) {
+                    (!name) ? name = currEnemyMarker.title: '';
+                    isGameOver = true;
+                    addNewPokemon(name, 'pc', currEnemyMarker.title);
+                    currEnemyMarker.setMap(null);
+                    $("#gameView").hide()
+                    $("#exploreMapPage").fadeIn()
+                    pause(victoryTheme);
+                    playLoop(mainTheme);
+                }
+            });
+
         }, 2500 / gameSpeed);
 
 
@@ -968,6 +988,7 @@ $(document).ready(function () {
     })
 
     $("#fleeButton").click(function () {
+        fleeSound.play();
         updateMessage("You have fled!");
         pause(battleTheme);
         setTimeout(function () {
@@ -1010,20 +1031,23 @@ $(document).ready(function () {
         }
 
         if (users.child(newUsername).exists()) {
-            restartGame = confirm(`An account with the username "${newUsername}" exists. Would you still like to start a new game?`);
-        }
+            bootbox.confirm({
+                message: `An account with the username "${bold(newUsername)}" exists. Would you still like to start a new game?`,
+                callback: function (restartGame) {
+                    if (restartGame) {
+                        currentUser = newUsername;
 
-        if (restartGame) {
-            currentUser = newUsername;
+                        // Set new user account in Firebase realtime database
+                        currentUserRef = usersRef.child(currentUser);
+                        setUserStartLocation();
 
-            // Set new user account in Firebase realtime database
-            currentUserRef = usersRef.child(currentUser);
-            setUserStartLocation();
-
-            // Hide Menu and Show Pokemon Selection page
-            $("#gameMenu").hide();
-            shrinkLogo(40);
-            $("#pokemonSelection").fadeIn();
+                        // Hide Menu and Show Pokemon Selection page
+                        $("#gameMenu").hide();
+                        shrinkLogo(40);
+                        $("#pokemonSelection").fadeIn();
+                    }
+                }
+            });
         }
 
     })
@@ -1065,9 +1089,21 @@ $(document).ready(function () {
                     trainer: selectedTrainer
                 })
 
-                addNewPokemon('party', speciesName);
 
-                showTrainerDash();
+                bootbox.prompt({
+                    title: "What would you like to name this Pokemon? ('.' and '/' are not allowed)",
+                    value: speciesName,
+                    closeButton: false,
+                    required: true,
+                    centerVertical: true,
+                    callback: function (name) {
+                        (!name) ? name = speciesName: '';
+                        addNewPokemon(name, 'party', speciesName);
+                        showTrainerDash();
+
+                    }
+                });
+
 
             }
 

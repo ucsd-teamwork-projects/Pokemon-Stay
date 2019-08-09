@@ -15,7 +15,7 @@ h3 {
 }
 
 #gameLogo {
-    width: 70%;
+    width: 70vw;
     max-width: 500px
 }
 
@@ -212,8 +212,15 @@ h3 {
     font-weight: bold
 }
 
-#user-dne-error {
-    font-size: 1rem
+#user-dne-error,
+#pc-error {
+    font-size: 1.2rem
+}
+
+.modal-open .bootbox.modal {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
 }
 
 @font-face {
