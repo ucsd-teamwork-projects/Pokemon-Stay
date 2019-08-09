@@ -54,7 +54,7 @@ h3 {
 
 .exploreMapContainer {
     height: 450px;
-    min-width: 100vw;
+    min-width: 90vw;
     margin-left: 50%;
     transform: translateX(-50%)
 }
