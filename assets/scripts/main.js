@@ -485,7 +485,11 @@ $(document).ready(function () {
 
     $("#addToPartyButton").click(function () {
         clickSound.play();
-        if (Object.keys(userParty).length === 6) {
+        var userPartySize = 0;
+        if (userParty) {
+            var userPartySize = Object.keys(userParty).length;
+        }
+        if (userPartySize === 6) {
             $("#pc-error").text("Your party is full!");
 
         } else {
@@ -498,6 +502,7 @@ $(document).ready(function () {
             $("#viewPCstatsButton").hide();
             $("#addToPartyButton").hide();
         }
+
 
 
     })
@@ -1048,6 +1053,17 @@ $(document).ready(function () {
                     }
                 }
             });
+        } else {
+            currentUser = newUsername;
+
+            // Set new user account in Firebase realtime database
+            currentUserRef = usersRef.child(currentUser);
+            setUserStartLocation();
+
+            // Hide Menu and Show Pokemon Selection page
+            $("#gameMenu").hide();
+            shrinkLogo(40);
+            $("#pokemonSelection").fadeIn();
         }
 
     })
