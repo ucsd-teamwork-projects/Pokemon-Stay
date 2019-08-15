@@ -41,11 +41,17 @@ function initAutocomplete() {
                 position: new google.maps.LatLng(randCoord.latitude, randCoord.longitude)
             });
 
+            
+
             markers.push(marker);
         }
 
         console.log(markers[0])
     });
+
+   
+
+   
 
    
 
@@ -118,3 +124,4 @@ function initAutocomplete() {
         map.fitBounds(bounds);
     });
 }
+
